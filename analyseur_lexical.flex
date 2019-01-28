@@ -37,7 +37,7 @@ alphanum {lettre}|{chiffre}
 "si"          {return SI;}
 "alors"       {return ALORS;}
 "sinon"       {return SINON;}
-"tant que"    {return TANTQUE;}
+"tantque"    {return TANTQUE;}
 "faire"       {return FAIRE;}
 "retour"        {return RETOUR;}
 "lire"        {return LIRE;}
