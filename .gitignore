@@ -1,0 +1,4 @@
+*.o
+compilo
+analyseur_lexical_flex.c
+
