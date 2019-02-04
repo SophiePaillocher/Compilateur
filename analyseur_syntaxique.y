@@ -26,11 +26,11 @@ int yyerror(char *s); // declare ci-dessous
 //...
 //TODO: compléter avec la liste des terminaux
 
-%start programme
+%start disjonction
 %%
 
 // grammaire des expressions arithmetiques 
-disjonction : disjonction OU 	conjonction
+disjonction : disjonction OU conjonction
 		|	conjonction
 		;
 conjonction : conjonction ET comparaison

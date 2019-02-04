@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "analyseur_syntaxique.tab.h"
 #include "analyseur_lexical_flex.h"
 
 FILE *yyin;
 extern char *yytext;   // déclaré dans analyseur_lexical
+
+
 
 /***********************************************************************
  * Fonction auxiliaire appelée par le compilo en mode -l pour tester 
@@ -20,7 +22,7 @@ void test_yylex(FILE *yyin) {
     nom_token( uniteCourante, nom, valeur );
     printf("%s\t%s\t%s\n", yytext, nom, valeur);        
   }
-}  
+} 
 
 /**********************************************************************/
 
@@ -59,7 +61,8 @@ int main(int argc, char **argv) {
        affiche_syntaxe = 1;
     }*/
     else if(!strcmp(argv[i], "-a")) {
-       affiche_syntaxe_abstraite = 1;
+		yyparse();
+       //affiche_syntaxe_abstraite = 1;
     }
     else if(!strcmp(argv[i], "-3")) {
        affiche_code3a = 1;
