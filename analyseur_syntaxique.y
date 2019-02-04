@@ -10,13 +10,30 @@ int yylex();          // declare dans analyseur lexical
 int yyerror(char *s); // declare ci-dessous
 %}
 
-%token OU ET  NON  EGAL  INFERIEUR  PLUS  MOINS  FOIS DIVISE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE IDENTIF
+%token OU 
+%token ET  
+%token NON  
+%token EGAL  
+%token INFERIEUR  
+%token PLUS  
+%token MOINS  
+%token FOIS 
+%token DIVISE 
+%token PARENTHESE_OUVRANTE 
+%token PARENTHESE_FERMANTE 
+%token IDENTIF
 //...
 //TODO: compléter avec la liste des terminaux
 
 %start programme
 %%
-
+expression : expression OU 	conjonction
+		|	conjonction
+		;
+conjonction : conjonction ET comparaison
+		|	comparaison
+		;
+egalite	
 programme : ;
 //TODO: compléter avec les productions de la grammaire
 
