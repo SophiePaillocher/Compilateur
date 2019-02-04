@@ -22,19 +22,40 @@ int yyerror(char *s); // declare ci-dessous
 %token PARENTHESE_OUVRANTE 
 %token PARENTHESE_FERMANTE 
 %token IDENTIF
+%token NOMBRE
 //...
 //TODO: compléter avec la liste des terminaux
 
 %start programme
 %%
-expression : expression OU 	conjonction
+
+// grammaire des expressions arithmetiques 
+disjonction : disjonction OU 	conjonction
 		|	conjonction
 		;
 conjonction : conjonction ET comparaison
 		|	comparaison
 		;
-egalite	
-programme : ;
+comparaison	: comparaison EGAL somme
+		|	comparaison INFERIEUR somme
+		| somme
+		;
+somme : somme PLUS produit
+	|	somme MOINS produit
+	|	produit
+	;
+produit : produit FOIS negation
+	|	 produit DIVISE negation
+	|	negation
+	;
+negation : NON expression
+	| expression
+	;
+expression : PARENTHESE_OUVRANTE disjonction PARENTHESE_FERMANTE
+		|	IDENTIF
+		|	NOMBRE	
+		;
+
 //TODO: compléter avec les productions de la grammaire
 
 %%
