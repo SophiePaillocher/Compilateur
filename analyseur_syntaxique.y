@@ -44,6 +44,7 @@ int yyerror(char *s); // declare ci-dessous
 %%
 
 // grammaire des expressions arithmetiques 
+
 disjonction : disjonction OU conjonction
 		|	conjonction
 		;
@@ -80,7 +81,32 @@ listarg : disjonction
 	|	disjonction VIRGULE listarg
 	|
 	;
-//TODO: compléter avec les productions de la grammaire
+	
+//Grammaire des instructions
+
+instructions : affectation
+	|	condition
+	|	boucle
+	|	retour
+	|	appelfonction
+	|	blocinstructions
+	|	instructionvide
+	;
+affectation : var EGAL disjonction POINT_VIRGULE ;
+condition : SI disjonction ALORS blocinstructions
+	|	SI disjonction ALORS blocinstructions SINON blocinstructions
+	;
+boucle TANTQUE disjonction FAIRE blocinstructions ;
+retour RETOUR isjonction POINT_VIRGULE ;
+appelfonction fonction POINT_VIRGULE
+	|	ECRIRE PARENTHESE_OUVRANTE disjonction PARENTHESE_FERMANTE POINT_VIRGULE
+	;
+blocinstructions ACCOLADE_OUVRANTE listedinstructions ACCOLADE_FERMANTE ;
+listedinstructions instruction
+	| instruction listedinstructions
+	|
+	;
+instructionvide : POINT_VIRGULE ;
 
 %%
 
