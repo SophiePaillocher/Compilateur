@@ -66,10 +66,20 @@ negation : NON expression
 	| expression
 	;
 expression : PARENTHESE_OUVRANTE disjonction PARENTHESE_FERMANTE
-		|	IDENTIF
-		|	NOMBRE	
+		|	var
+		|	NOMBRE
+		| 	fonction
 		;
-
+var : IDENTIF
+	| 	IDENTIF CROCHET_OUVRANT NOMBRE CROCHET_FERMANT
+	;
+fonction : LIRE PARENTHESE_OUVANTE PARENTHESE_FERMANTE
+	| 	IDENTIF PARENTHESE_OUVRANTE listarg PARENTHESE_FERMANTE
+	;
+listarg : disjonction
+	|	disjonction VIRGULE listarg
+	|
+	;
 //TODO: compléter avec les productions de la grammaire
 
 %%
