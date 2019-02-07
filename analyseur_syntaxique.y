@@ -23,8 +23,22 @@ int yyerror(char *s); // declare ci-dessous
 %token PARENTHESE_FERMANTE 
 %token IDENTIF
 %token NOMBRE
-//...
-//TODO: compléter avec la liste des terminaux
+%token POINT_VIRGULE
+%token CROCHET_OUVRANT
+%token CROCHET_FERMANT
+%token ACCOLADE_OUVRANTE
+%token ACCOLADE_FERMANTE
+%token SI
+%token ALORS
+%token SINON
+%token TANTQUE
+%token FAIRE
+%token ENTIER
+%token RETOUR
+%token LIRE
+%token ECRIRE
+%token VIRGULE
+
 
 %start disjonction
 %%
