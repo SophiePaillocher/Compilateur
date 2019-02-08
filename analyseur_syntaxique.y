@@ -72,7 +72,7 @@ expression : PARENTHESE_OUVRANTE disjonction PARENTHESE_FERMANTE
 		| 	fonction
 		;
 var : IDENTIF
-	| 	IDENTIF CROCHET_OUVRANT NOMBRE CROCHET_FERMANT
+	| 	IDENTIF CROCHET_OUVRANT disjonction CROCHET_FERMANT
 	;
 fonction : LIRE PARENTHESE_OUVANTE PARENTHESE_FERMANTE
 	| 	IDENTIF PARENTHESE_OUVRANTE listarg PARENTHESE_FERMANTE
@@ -84,7 +84,7 @@ listarg : disjonction
 	
 //Grammaire des instructions
 
-instructions : affectation
+instruction : affectation
 	|	condition
 	|	boucle
 	|	retour
@@ -96,13 +96,13 @@ affectation : var EGAL disjonction POINT_VIRGULE ;
 condition : SI disjonction ALORS blocinstructions
 	|	SI disjonction ALORS blocinstructions SINON blocinstructions
 	;
-boucle TANTQUE disjonction FAIRE blocinstructions ;
-retour RETOUR isjonction POINT_VIRGULE ;
-appelfonction fonction POINT_VIRGULE
+boucle : TANTQUE disjonction FAIRE blocinstructions ;
+retour : RETOUR isjonction POINT_VIRGULE ;
+appelfonction : fonction POINT_VIRGULE
 	|	ECRIRE PARENTHESE_OUVRANTE disjonction PARENTHESE_FERMANTE POINT_VIRGULE
 	;
-blocinstructions ACCOLADE_OUVRANTE listedinstructions ACCOLADE_FERMANTE ;
-listedinstructions instruction
+blocinstructions : ACCOLADE_OUVRANTE listedinstructions ACCOLADE_FERMANTE ;
+listedinstructions : instruction
 	| instruction listedinstructions
 	|
 	;
