@@ -16,21 +16,22 @@
 #define ACCOLADE_FERMANTE 11
 #define EGAL 12
 #define INFERIEUR 13
-#define ET 14
-#define OU 15
-#define NON 16
-#define SI 17
-#define ALORS 18
-#define SINON 19
-#define TANTQUE 20
-#define FAIRE 21
-#define ENTIER 22
-#define RETOUR 23
-#define LIRE 24
-#define ECRIRE 25
-#define IDENTIF 26
-#define NOMBRE 27
-#define VIRGULE 28
+#define SUPERIEUR 14
+#define ET 15
+#define OU 16
+#define NON 17
+#define SI 18
+#define ALORS 19
+#define SINON 20
+#define TANTQUE 21
+#define FAIRE 22
+#define ENTIER 23
+#define RETOUR 24
+#define LIRE 25
+#define ECRIRE 26
+#define IDENTIF 27
+#define NOMBRE 28
+#define VIRGULE 29
 
 #endif
 

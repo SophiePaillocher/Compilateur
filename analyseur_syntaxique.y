@@ -14,7 +14,8 @@ int yyerror(char *s); // declare ci-dessous
 %token ET  
 %token NON  
 %token EGAL  
-%token INFERIEUR  
+%token INFERIEUR
+%token SUPERIEUR  
 %token PLUS  
 %token MOINS  
 %token FOIS 
@@ -40,12 +41,24 @@ int yyerror(char *s); // declare ci-dessous
 %token VIRGULE
 
 
-%start disjonction
+%start programme
 %%
+
+// Axiome de la grammaire
+programme : ensembleDecDef
+	|
+	;
+ensembleDecDef : decDef ensembleDecDef
+	|	decDef
+	;
+decDef : ligneDeclarationsVars
+	| definitionFct
+	;
+	
 
 // grammaire des expressions arithmetiques 
 
-disjonction : disjonction OU conjonction
+expressionArithmetique : expressionArithmetique OU conjonction
 		|	conjonction
 		;
 conjonction : conjonction ET comparaison
@@ -53,6 +66,7 @@ conjonction : conjonction ET comparaison
 		;
 comparaison	: comparaison EGAL somme
 		|	comparaison INFERIEUR somme
+		|	comparaison SUPERIEUR somme
 		| somme
 		;
 somme : somme PLUS produit
@@ -60,53 +74,102 @@ somme : somme PLUS produit
 	|	produit
 	;
 produit : produit FOIS negation
-	|	 produit DIVISE negation
+	|	produit DIVISE negation
 	|	negation
 	;
-negation : NON expression
-	| expression
+negation : NON expressionPrioritaire
+	| expressionPrioritaire
 	;
-expression : PARENTHESE_OUVRANTE disjonction PARENTHESE_FERMANTE
+expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE
 		|	var
 		|	NOMBRE
 		| 	fonction
 		;
 var : IDENTIF
-	| 	IDENTIF CROCHET_OUVRANT disjonction CROCHET_FERMANT
+	| 	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT
 	;
 fonction : LIRE PARENTHESE_OUVANTE PARENTHESE_FERMANTE
-	| 	IDENTIF PARENTHESE_OUVRANTE listarg PARENTHESE_FERMANTE
+	|	ECRIRE PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE
+	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE
 	;
-listarg : disjonction
-	|	disjonction VIRGULE listarg
-	|
+argument : listArg
+		|
+		;
+
+listArg : expressionArithmetique
+	|	expressionArithmetique VIRGULE listArg
 	;
 	
-//Grammaire des instructions
+
+// Grammaire des instructions
 
 instruction : affectation
 	|	condition
 	|	boucle
 	|	retour
-	|	appelfonction
-	|	blocinstructions
-	|	instructionvide
+//	|	appelFonction
+	|	blocInstructions
+	|	instructionVide
+	|	instructionArithmetique
 	;
-affectation : var EGAL disjonction POINT_VIRGULE ;
-condition : SI disjonction ALORS blocinstructions
-	|	SI disjonction ALORS blocinstructions SINON blocinstructions
+affectation : var EGAL expressionArithmetique POINT_VIRGULE ;
+condition : SI expressionArithmetique ALORS blocInstructions
+	|	SI expressionArithmetique ALORS blocInstructions SINON blocInstructions
 	;
-boucle : TANTQUE disjonction FAIRE blocinstructions ;
-retour : RETOUR isjonction POINT_VIRGULE ;
-appelfonction : fonction POINT_VIRGULE
-	|	ECRIRE PARENTHESE_OUVRANTE disjonction PARENTHESE_FERMANTE POINT_VIRGULE
-	;
-blocinstructions : ACCOLADE_OUVRANTE listedinstructions ACCOLADE_FERMANTE ;
-listedinstructions : instruction
-	| instruction listedinstructions
+boucle : TANTQUE expressionArithmetique FAIRE blocInstructions ;
+retour : RETOUR expressionArithmetique POINT_VIRGULE ;
+//appelFonction : fonction POINT_VIRGULE ;											// Pris en compte dans instructionArithmetique
+blocInstructions : ACCOLADE_OUVRANTE listInstructions ACCOLADE_FERMANTE ;
+listInstructions : instructions
 	|
 	;
+instructions : instruction instructions ;
 instructionvide : POINT_VIRGULE ;
+
+//// instructionArithmetique
+instructionArithmetique : instDisj POINT_VIRGULE ;
+instDisj : instDisj OU instConj
+	| 	instConj
+	;
+instConj : instConj ET instComp
+	|	instComp
+	;
+instComp : instComp INFERIEUR somme
+	|	instComp SUPERIEUR somme
+	|	somme
+	;
+
+
+// Grammaire des declarations de variables
+
+blocDeclarationsVarsLocales : ensembleDeclarationsVarLocales 
+	|	
+	;
+ensembleDeclarationsVarLocales : ensembleDeclarationsVarLocales ligneDeclarationsVars 			// Util?
+	|	ligneDeclarationsVars
+	;
+	
+declarationsArgs : declarationsVars
+	|	
+	;
+	
+ligneDeclarationsVars : declarationsVars POINT_VIRGULE ;
+declarationsVars : declarationVar VIRGULE declarationsVars
+	|	declarationVar
+	;
+declarationVar : ENTIER IDENTIF 
+	|	ENTIER IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT 
+	;
+	
+
+// Grammaire des definitions de fonctions
+
+definitionFct : IDENTIF PARENTHESE_OUVRANTE declarationsArgs PARENTHESE_FERMANTE blocDeclarationsVarsLocales blocInstructions ;
+
+
+
+
+
 
 %%
 
