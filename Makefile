@@ -9,8 +9,8 @@ OBJ = analyseur_lexical_flex.o util.o
 
 all: compilo
 
-compilo: compilo.c analyseur_syntaxique.tab.o analyseur_lexical_flex.o util.o
-	$(CC) $(CCFLAGS) -o compilo compilo.c $(OBJ)
+compilo: compilo.c analyseur_syntaxique.tab.o analyseur_lexical_flex.o
+		$(CC) -o $@ $^
 
 analyseur_syntaxique.tab.c: analyseur_syntaxique.y
 	$(YACC) $<
@@ -28,3 +28,4 @@ clean:
 	- rm -f compilo
 	- rm -f test_yylex
 	- rm -f analyseur_lexical_flex.c
+	- rm -f analyseur_syntaxique.tab.c

@@ -108,7 +108,7 @@ instruction : affectation
 	|	retour
 	|	appelFonction
 	|	blocInstructions
-	|	instructionVide
+	|	POINT_VIRGULE
 	;
 affectation : var EGAL expressionArithmetique POINT_VIRGULE ;
 condition : SI expressionArithmetique ALORS blocInstructions
@@ -121,11 +121,9 @@ appelFonction : fonction POINT_VIRGULE
 	|	ECRIRE PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE POINT_VIRGULE
 	;											
 blocInstructions : ACCOLADE_OUVRANTE listInstructions ACCOLADE_FERMANTE ;
-listInstructions : instructions
+listInstructions : instruction listInstructions
 	|
 	;
-instructions : instruction instructions ;
-instructionVide : POINT_VIRGULE ;
 
 
 // Grammaire des declarations de variables
