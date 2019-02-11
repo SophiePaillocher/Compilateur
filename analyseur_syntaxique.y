@@ -88,7 +88,7 @@ expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FE
 var : IDENTIF
 	| 	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT
 	;
-fonction : LIRE PARENTHESE_OUVANTE PARENTHESE_FERMANTE
+fonction : LIRE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE
 	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE
 	;
 argument : listArg
@@ -125,7 +125,7 @@ listInstructions : instructions
 	|
 	;
 instructions : instruction instructions ;
-instructionvide : POINT_VIRGULE ;
+instructionVide : POINT_VIRGULE ;
 
 
 // Grammaire des declarations de variables
@@ -148,7 +148,7 @@ blocDeclarationsVarsLocales : ligneDeclarationsVars
 	|	
 	;
 	
-declarationsArgs : declarationsVars
+declarationsArgs : listDeclarationsVars
 	|	
 	;
 
