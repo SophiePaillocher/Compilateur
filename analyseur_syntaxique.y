@@ -89,7 +89,6 @@ var : IDENTIF
 	| 	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT
 	;
 fonction : LIRE PARENTHESE_OUVANTE PARENTHESE_FERMANTE
-	|	ECRIRE PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE
 	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE
 	;
 argument : listArg
@@ -107,10 +106,9 @@ instruction : affectation
 	|	condition
 	|	boucle
 	|	retour
-//	|	appelFonction
+	|	appelFonction
 	|	blocInstructions
 	|	instructionVide
-	|	instructionArithmetique
 	;
 affectation : var EGAL expressionArithmetique POINT_VIRGULE ;
 condition : SI expressionArithmetique ALORS blocInstructions
@@ -118,7 +116,10 @@ condition : SI expressionArithmetique ALORS blocInstructions
 	;
 boucle : TANTQUE expressionArithmetique FAIRE blocInstructions ;
 retour : RETOUR expressionArithmetique POINT_VIRGULE ;
-//appelFonction : fonction POINT_VIRGULE ;											// Pris en compte dans instructionArithmetique
+
+appelFonction : fonction POINT_VIRGULE
+	|	ECRIRE PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE POINT_VIRGULE
+	;											
 blocInstructions : ACCOLADE_OUVRANTE listInstructions ACCOLADE_FERMANTE ;
 listInstructions : instructions
 	|
@@ -126,35 +127,11 @@ listInstructions : instructions
 instructions : instruction instructions ;
 instructionvide : POINT_VIRGULE ;
 
-//// instructionArithmetique
-instructionArithmetique : instDisj POINT_VIRGULE ;
-instDisj : instDisj OU instConj
-	| 	instConj
-	;
-instConj : instConj ET instComp
-	|	instComp
-	;
-instComp : instComp INFERIEUR somme
-	|	instComp SUPERIEUR somme
-	|	somme
-	;
-
 
 // Grammaire des declarations de variables
-
-blocDeclarationsVarsLocales : ensembleDeclarationsVarLocales 
-	|	
-	;
-ensembleDeclarationsVarLocales : ensembleDeclarationsVarLocales ligneDeclarationsVars 			// Util?
-	|	ligneDeclarationsVars
-	;
 	
-declarationsArgs : declarationsVars
-	|	
-	;
-	
-ligneDeclarationsVars : declarationsVars POINT_VIRGULE ;
-declarationsVars : declarationVar VIRGULE declarationsVars
+ligneDeclarationsVars : listDeclarationsVars POINT_VIRGULE ;
+listDeclarationsVars : declarationVar VIRGULE listDeclarationsVars								// Modifier les noms
 	|	declarationVar
 	;
 declarationVar : ENTIER IDENTIF 
@@ -166,6 +143,14 @@ declarationVar : ENTIER IDENTIF
 
 definitionFct : IDENTIF PARENTHESE_OUVRANTE declarationsArgs PARENTHESE_FERMANTE blocDeclarationsVarsLocales blocInstructions ;
 
+
+blocDeclarationsVarsLocales : ligneDeclarationsVars 
+	|	
+	;
+	
+declarationsArgs : declarationsVars
+	|	
+	;
 
 
 
