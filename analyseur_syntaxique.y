@@ -10,20 +10,20 @@ int yylex();          // declare dans analyseur lexical
 int yyerror(char *s); // declare ci-dessous
 %}
 
-%token OU 
-%token ET  
-%token NON  
-%token EGAL  
+%token OU
+%token ET
+%token NON
+%token EGAL
 %token INFERIEUR
-%token SUPERIEUR  
-%token PLUS  
-%token MOINS  
-%token FOIS 
-%token DIVISE 
-%token PARENTHESE_OUVRANTE 
-%token PARENTHESE_FERMANTE 
-%token IDENTIF
-%token NOMBRE
+%token SUPERIEUR
+%token PLUS
+%token MOINS
+%token FOIS
+%token DIVISE
+%token PARENTHESE_OUVRANTE
+%token PARENTHESE_FERMANTE
+%token <char[]> IDENTIF
+%token <int> NOMBRE
 %token POINT_VIRGULE
 %token CROCHET_OUVRANT
 %token CROCHET_FERMANT
@@ -40,7 +40,6 @@ int yyerror(char *s); // declare ci-dessous
 %token ECRIRE
 %token VIRGULE
 
-
 %start programme
 %%
 
@@ -54,9 +53,9 @@ ensembleDecDef : decDef ensembleDecDef
 decDef : ligneDeclarationsVars
 	| definitionFct
 	;
-	
 
-// grammaire des expressions arithmetiques 
+
+// grammaire des expressions arithmetiques
 
 expressionArithmetique : expressionArithmetique OU conjonction
 		|	conjonction
@@ -98,7 +97,7 @@ argument : listArg
 listArg : expressionArithmetique
 	|	expressionArithmetique VIRGULE listArg
 	;
-	
+
 
 // Grammaire des instructions
 
@@ -119,7 +118,7 @@ retour : RETOUR expressionArithmetique POINT_VIRGULE ;
 
 appelFonction : fonction POINT_VIRGULE
 	|	ECRIRE PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE POINT_VIRGULE
-	;											
+	;
 blocInstructions : ACCOLADE_OUVRANTE listInstructions ACCOLADE_FERMANTE ;
 listInstructions : instruction listInstructions
 	|
@@ -127,27 +126,27 @@ listInstructions : instruction listInstructions
 
 
 // Grammaire des declarations de variables
-	
+
 ligneDeclarationsVars : listDeclarationsVars POINT_VIRGULE ;
 listDeclarationsVars : declarationVar VIRGULE listDeclarationsVars								// Modifier les noms
 	|	declarationVar
 	;
-declarationVar : ENTIER IDENTIF 
-	|	ENTIER IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT 
+declarationVar : ENTIER IDENTIF
+	|	ENTIER IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT
 	;
-	
+
 
 // Grammaire des definitions de fonctions
 
 definitionFct : IDENTIF PARENTHESE_OUVRANTE declarationsArgs PARENTHESE_FERMANTE blocDeclarationsVarsLocales blocInstructions ;
 
 
-blocDeclarationsVarsLocales : ligneDeclarationsVars 
-	|	
+blocDeclarationsVarsLocales : ligneDeclarationsVars
+	|
 	;
-	
+
 declarationsArgs : listDeclarationsVars
-	|	
+	|
 	;
 
 
