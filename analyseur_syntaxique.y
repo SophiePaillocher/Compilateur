@@ -78,7 +78,7 @@ produit : produit FOIS negation		{$$ = $1 * $3;}
 	|	produit DIVISE negation		{$$ = $1 / $3;}
 	|	negation					{$$ = $1;}
 	;
-negation : NON expressionPrioritaire		{$$ = ! $2;}
+negation : NON negation		{$$ = ! $2;}
 	| expressionPrioritaire					{$$ = $1;}
 	;
 expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE		{$$ = $2;}
@@ -97,7 +97,7 @@ argument : listArg		{$$ = $1;}			// A Verifier
 		;
 
 listArg : expressionArithmetique					{$$ = $1;}		// A verifier
-		|	expressionArithmetique VIRGULE listArg		{$$ = $1;}	// A verifier
+		|	expressionArithmetique VIRGULE listArg		{$$ = ;}	// A verifier
 		;
 
 
