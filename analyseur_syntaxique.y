@@ -9,7 +9,7 @@ extern int yylineno;  // declare dans analyseur lexical
 int yylex();          // declare dans analyseur lexical
 int yyerror(char *s); // declare ci-dessous
 %}
-
+%union {double dval; int ival; char[] sval;} 		// A verifier (dval util?)
 %token OU
 %token ET
 %token NON
@@ -22,8 +22,8 @@ int yyerror(char *s); // declare ci-dessous
 %token DIVISE
 %token PARENTHESE_OUVRANTE
 %token PARENTHESE_FERMANTE
-%token <char[]> IDENTIF
-%token <int> NOMBRE
+%token <sval> IDENTIF
+%token <ival> NOMBRE			// A Verifier	(ival ou dval)
 %token POINT_VIRGULE
 %token CROCHET_OUVRANT
 %token CROCHET_FERMANT
@@ -39,6 +39,8 @@ int yyerror(char *s); // declare ci-dessous
 %token LIRE
 %token ECRIRE
 %token VIRGULE
+
+% type <ival> expressionArithmetique conjonction comparaison somme produit negation expressionPrioritaire var fonction	// A verifier (ival?)
 
 %start programme
 %%
@@ -57,46 +59,46 @@ decDef : ligneDeclarationsVars
 
 // grammaire des expressions arithmetiques
 
-expressionArithmetique : expressionArithmetique OU conjonction
-		|	conjonction
+expressionArithmetique : expressionArithmetique OU conjonction 	{$$ = $1 || $3;}
+		|	conjonction											{$$ = $1;}
 		;
-conjonction : conjonction ET comparaison
-		|	comparaison
+conjonction : conjonction ET comparaison	{$$ = $1 && $3;}
+		|	comparaison						{$$ = $1;}
 		;
-comparaison	: comparaison EGAL somme
-		|	comparaison INFERIEUR somme
-		|	comparaison SUPERIEUR somme
-		| somme
+comparaison	: comparaison EGAL somme		{$$ = $1 == $3;}
+		|	comparaison INFERIEUR somme		{$$ = $1 < $3;}
+		|	comparaison SUPERIEUR somme		{$$ = $1 > $3;}
+		| somme								{$$ = $1;}
 		;
-somme : somme PLUS produit
-	|	somme MOINS produit
-	|	produit
+somme : somme PLUS produit		{$$ = $1 + $3;}
+	|	somme MOINS produit		{$$ = $1 - $3;}
+	|	produit					{$$ = $1;}
 	;
-produit : produit FOIS negation
-	|	produit DIVISE negation
-	|	negation
+produit : produit FOIS negation		{$$ = $1 * $3;}
+	|	produit DIVISE negation		{$$ = $1 / $3;}
+	|	negation					{$$ = $1;}
 	;
-negation : NON expressionPrioritaire
-	| expressionPrioritaire
+negation : NON expressionPrioritaire		{$$ = ! $2;}
+	| expressionPrioritaire					{$$ = $1;}
 	;
-expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE
-		|	var
-		|	NOMBRE
-		| 	fonction
+expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE		{$$ = $2;}
+		|	var																				{$$ = $1;}
+		|	NOMBRE																			{$$ = $1;}
+		| 	fonction																		{$$ = $1;}
 		;
-var : IDENTIF
-	| 	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT
+var : IDENTIF																				{$$ = $1;}	
+	| 	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT						{$$ = $1[$3];}				// A verifier
 	;
-fonction : LIRE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE
-	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE
+fonction : LIRE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE					{$$ = lire();}			// A verifier
+	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE		{$$ = $1($3);}		// A verifier
 	;
-argument : listArg
-		|
+argument : listArg		{$$ = $1;}			// A Verifier
+		|				{$$ = /*$1*/;}		// A verifier
 		;
 
-listArg : expressionArithmetique
-	|	expressionArithmetique VIRGULE listArg
-	;
+listArg : expressionArithmetique					{$$ = $1;}		// A verifier
+		|	expressionArithmetique VIRGULE listArg		{$$ = $1;}	// A verifier
+		;
 
 
 // Grammaire des instructions
