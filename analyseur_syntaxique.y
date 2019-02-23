@@ -9,7 +9,7 @@ extern int yylineno;  // declare dans analyseur lexical
 int yylex();          // declare dans analyseur lexical
 int yyerror(char *s); // declare ci-dessous
 %}
-%union {double dval; int ival; char[] sval;} 		// A verifier (dval util?)
+%union {int ival; char[] sval;} 		
 %token OU
 %token ET
 %token NON
@@ -23,7 +23,7 @@ int yyerror(char *s); // declare ci-dessous
 %token PARENTHESE_OUVRANTE
 %token PARENTHESE_FERMANTE
 %token <sval> IDENTIF
-%token <ival> NOMBRE			// A Verifier	(ival ou dval)
+%token <ival> NOMBRE			
 %token POINT_VIRGULE
 %token CROCHET_OUVRANT
 %token CROCHET_FERMANT
@@ -40,7 +40,7 @@ int yyerror(char *s); // declare ci-dessous
 %token ECRIRE
 %token VIRGULE
 
-% type <ival> expressionArithmetique conjonction comparaison somme produit negation expressionPrioritaire var fonction	// A verifier (ival?)
+% type <ival> expressionArithmetique conjonction comparaison somme produit negation expressionPrioritaire var fonction	
 
 %start programme
 %%
@@ -82,9 +82,9 @@ negation : NON negation		{$$ = ! $2;}
 	| expressionPrioritaire					{$$ = $1;}
 	;
 expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE		{$$ = $2;}
-		|	var																				{$$ = $1;}
-		|	NOMBRE																			{$$ = $1;}
-		| 	fonction																		{$$ = $1;}
+		|	var		{$$ = $1;}																		{$$ = $1;}
+		|	NOMBRE		{$$ = $1;}																	{$$ = $1;}
+		| 	fonction	{$$ = $1;}																	{$$ = $1;}
 		;
 var : IDENTIF																				{$$ = $1;}	
 	| 	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT						{$$ = $1[$3];}				// A verifier
@@ -93,11 +93,11 @@ fonction : LIRE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE					{$$ = lire();}			// 
 	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE		{$$ = $1($3);}		// A verifier
 	;
 argument : listArg		{$$ = $1;}			// A Verifier
-		|				{$$ = /*$1*/;}		// A verifier
+		|				{$$ = NULL;}		// A verifier
 		;
 
 listArg : expressionArithmetique					{$$ = $1;}		// A verifier
-		|	expressionArithmetique VIRGULE listArg		{$$ = ;}	// A verifier
+		|	expressionArithmetique VIRGULE listArg		{$$ = $1,$3;}	// A verifier
 		;
 
 
