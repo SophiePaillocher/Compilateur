@@ -133,7 +133,7 @@ struct n_appel_{
 
 /* Crée un noeud de type appel de fonction - peu importe si instruction ou 
    expression */
-n_appel *cree_n_appel(char *fonction, n_l_exp *args);												// A revoir
+n_appel *cree_n_appel(char *fonction, n_l_exp *args);												
 
 /*-------------------------------------------------------------------------*/
 /* Accès à une variable dans une partie gauche d'affectation ou expression */
@@ -147,10 +147,10 @@ struct n_var_ {
 
 /* Crée un noeud de type accès à une variable simple (dans une expression ou à 
    gauche d'une affectation) */
-n_var *cree_n_var_simple(char *nom);																// A revoir
+n_var *cree_n_var_simple(char *nom);																
 /* Crée un noeud de type accès à une variable indicée - accès à une case de 
    tableau (dans une expression ou à gauche d'une affectation) */
-n_var *cree_n_var_indicee(char *nom, n_exp *indice);												// A revoir
+n_var *cree_n_var_indicee(char *nom, n_exp *indice);												
 
 /*-------------------------------------------------------------------------*/
 /* Liste chaînée d'expressions */
