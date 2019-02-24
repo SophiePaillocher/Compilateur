@@ -66,7 +66,7 @@ decDef : ligneDeclarationsVars
 // grammaire des expressions arithmetiques
 //expAriValue : expressionArithmetique {printf(cree_n_exp_op(operation type, n_exp *op1, n_exp *op2);}
 expressionArithmetique : expressionArithmetique OU conjonction 	{$$ = cree_n_exp_op(ou, $1, $3);}
-		|	conjonction											{$$ = $1}
+		|	conjonction											{$$ = $1;}
 		;
 conjonction : conjonction ET comparaison	{$$ = $1 && $3; cree_n_exp_op(et, $1, $3);}
 		|	comparaison						{$$ = $1;}
@@ -87,7 +87,7 @@ produit : produit FOIS negation		{$$ = cree_n_exp_op(fois, $1, $3);}
 negation : NON negation			{$$ = cree_n_exp_op(non, $2, NULL);}
 	| expressionPrioritaire		{$$ = $1;}
 	;
-expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE		{$$ = $2}
+expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE		{$$ = $2;}
 		|	var																				{$$ = $1;}
 		|	NOMBRE																			{$$ = $1;}
 		| 	fonction																		{$$ = $1;}
@@ -98,46 +98,46 @@ var : IDENTIF																				{$$ = cree_n_exp_var($1);}
 fonction : LIRE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE					{$$ = cree_n_exp_lire();}			
 	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE		{$$ = cree_n_exp_appel($1);}	//A verifier	
 	;
-argument : listArg		{$$ = $1;}			// A Verifier
-		|				{$$ = NULL;}		// A verifier
+argument : listArg		{$$ = $1;}			
+		|				{$$ = NULL;}		
 		;
 
-listArg : expressionArithmetique						{$$ = }		// A verifier
-		|	expressionArithmetique VIRGULE listArg		{$$ = }	// A verifier
+listArg : expressionArithmetique						{$$ = cree_n_l_exp($1, Null);}		
+		|	listArg VIRGULE expressionArithmetique		{$$ = cree_n_l_exp($1, $3;}	
 		;
 
 
 // Grammaire des instructions
 
-instruction : affectation
-	|	condition
-	|	boucle
-	|	retour
-	|	appelFonction
-	|	blocInstructions
-	|	POINT_VIRGULE
+instruction : affectation																{$$ = $1;}
+	|	condition																		{$$ = $1;}
+	|	boucle																			{$$ = $1;}
+	|	retour																			{$$ = $1;}
+	|	appelFonction																	{$$ = $1;}
+	|	blocInstructions																{$$ = $1;}
+	|	POINT_VIRGULE																	{$$ = cree_n_instr_vide();}
 	;
 affectation : var EGAL expressionArithmetique POINT_VIRGULE 							{$$ = cree_n_instr_affect($1, $3);};
 condition : SI expressionArithmetique ALORS blocInstructions							{$$ = cree_n_instr_si($2, $4, NULL);}
 	|	SI expressionArithmetique ALORS blocInstructions SINON blocInstructions			{$$ = cree_n_instr_si($2, $4, $6);}
 	;
 boucle : TANTQUE expressionArithmetique FAIRE blocInstructions 							{$$ = cree_n_instr_tantque($2, $4);};
-retour : RETOUR expressionArithmetique POINT_VIRGULE ;
+retour : RETOUR expressionArithmetique POINT_VIRGULE 									{$$ = cree_n_instr_retour($2);};
 
 appelFonction : fonction POINT_VIRGULE															{$$ = cree_n_instr_appel($1);}
 	|	ECRIRE PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE POINT_VIRGULE		{$$ = cree_n_instr_ecrire($3);}
 	;
 blocInstructions : ACCOLADE_OUVRANTE listInstructions ACCOLADE_FERMANTE 				{$$ = cree_n_instr_bloc($2);};
-listInstructions : instruction listInstructions											{$$ = 
+listInstructions : instruction listInstructions											{$$ = };
 	|
 	;
 
 
 // Grammaire des declarations de variables
 
-ligneDeclarationsVars : listDeclarationsVars POINT_VIRGULE ;
-listDeclarationsVars : declarationVar VIRGULE listDeclarationsVars								// Modifier les noms
-	|	declarationVar
+ligneDeclarationsVars : listDeclarationsVars POINT_VIRGULE 								{$$ = $1;};
+listDeclarationsVars : listDeclarationsVars VIRGULE declarationVar						{$$ = cree_n_l_dec($1, $3);}				
+	|	declarationVar																	{$$ = cree_n_l_dec($1, NULL);}
 	;
 declarationVar : ENTIER IDENTIF															{$$ = cree_n_dec_var($2);}
 	|	ENTIER IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT			{$$ = cree_n_dec_tab($2, $4);}
@@ -146,12 +146,12 @@ declarationVar : ENTIER IDENTIF															{$$ = cree_n_dec_var($2);}
 
 // Grammaire des definitions de fonctions
 
-definitionFct : IDENTIF PARENTHESE_OUVRANTE declarationsArgs PARENTHESE_FERMANTE blocDeclarationsVarsLocales blocInstructions ;		{cree_n_dec_fonc($1, $3, $5, $6);
-blocDeclarationsVarsLocales : ligneDeclarationsVars
-	|
+definitionFct : IDENTIF PARENTHESE_OUVRANTE declarationsArgs PARENTHESE_FERMANTE blocDeclarationsVarsLocales blocInstructions 		{$$ = cree_n_dec_fonc($1, $3, $5, $6);};
+blocDeclarationsVarsLocales : ligneDeclarationsVars		{$$ = $1;}
+	|													{$$ = NULL;}
 	;
-declarationsArgs : listDeclarationsVars
-	|
+declarationsArgs : listDeclarationsVars					{$$ = $1;}
+	|													{$$ = NULL;}
 	;
 
 
