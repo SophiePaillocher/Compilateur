@@ -39,6 +39,8 @@ struct n_prog_ {
 n_prog *cree_n_prog(n_l_dec *variables, n_l_dec *fonctions);
 /*-------------------------------------------------------------------------*/
 
+// Recherche : cree_n_var_indicee
+
 /* Déclaration de fonction, variable simple ou variable tableau */
 struct n_dec_ {
   enum {foncDec, varDec, tabDec} type; 
