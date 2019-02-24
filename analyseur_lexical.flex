@@ -44,7 +44,7 @@ alphanum {lettre}|{chiffre}
 "lire"        {return LIRE;}
 "ecrire"      {return ECRIRE;}
 ","           {return VIRGULE;}
-[0-9]+        {return NOMBRE; }
+[0-9]+        {/*yylval.ival = atoi(yytext);*/ return NOMBRE; }
 "entier"      {return ENTIER;}
 {lettre}{alphanum}*      {return IDENTIF;}
 [ \t\n]
@@ -52,7 +52,7 @@ alphanum {lettre}|{chiffre}
 
 %%
 
-/* Code copié À LA FIN de l'analyseyur */
+/* Code copié À LA FIN de l'analyseur */
 
 int yywrap(){
   return 1;

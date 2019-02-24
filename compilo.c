@@ -61,8 +61,7 @@ int main(int argc, char **argv) {
        affiche_syntaxe = 1;
     }*/
     else if(!strcmp(argv[i], "-a")) {
-		yyparse();
-       //affiche_syntaxe_abstraite = 1;
+       affiche_syntaxe_abstraite = 1;
     }
     else if(!strcmp(argv[i], "-3")) {
        affiche_code3a = 1;
@@ -93,9 +92,9 @@ int main(int argc, char **argv) {
   if(affiche_lex == 1) {
     test_yylex( yyin );    
   }  
-  //yyparse();  
   if( affiche_syntaxe_abstraite ) {
-    //Affiche arbre abstrait
+	yyparse();
+	printf("Compilation complete!");
   }
   if(affiche_code3a){
   	//Affiche code 3a 

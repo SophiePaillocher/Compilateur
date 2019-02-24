@@ -57,29 +57,37 @@ extern int yydebug;
     DIVISE = 267,
     PARENTHESE_OUVRANTE = 268,
     PARENTHESE_FERMANTE = 269,
-    IDENTIF = 270,
-    NOMBRE = 271,
-    POINT_VIRGULE = 272,
-    CROCHET_OUVRANT = 273,
-    CROCHET_FERMANT = 274,
-    ACCOLADE_OUVRANTE = 275,
-    ACCOLADE_FERMANTE = 276,
-    SI = 277,
-    ALORS = 278,
-    SINON = 279,
-    TANTQUE = 280,
-    FAIRE = 281,
-    ENTIER = 282,
-    RETOUR = 283,
-    LIRE = 284,
-    ECRIRE = 285,
-    VIRGULE = 286
+    NOMBRE = 270,
+    POINT_VIRGULE = 271,
+    CROCHET_OUVRANT = 272,
+    CROCHET_FERMANT = 273,
+    ACCOLADE_OUVRANTE = 274,
+    ACCOLADE_FERMANTE = 275,
+    SI = 276,
+    ALORS = 277,
+    SINON = 278,
+    TANTQUE = 279,
+    FAIRE = 280,
+    ENTIER = 281,
+    RETOUR = 282,
+    LIRE = 283,
+    ECRIRE = 284,
+    VIRGULE = 285
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 13 "analyseur_syntaxique.y" /* yacc.c:1909  */
+double dval; int ival; /*char sval[];*/
+
+#line 88 "analyseur_syntaxique.tab.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

@@ -9,7 +9,8 @@ extern int yylineno;  // declare dans analyseur lexical
 int yylex();          // declare dans analyseur lexical
 int yyerror(char *s); // declare ci-dessous
 %}
-%union {double dval; int ival; char[] sval;} 		// A verifier (dval util?)
+
+%union {double dval; int ival; char sval[];} 		// A verifier (dval util?)
 %token OU
 %token ET
 %token NON
@@ -40,9 +41,14 @@ int yyerror(char *s); // declare ci-dessous
 %token ECRIRE
 %token VIRGULE
 
-% type <ival> expressionArithmetique conjonction comparaison somme produit negation expressionPrioritaire var fonction	// A verifier (ival?)
+%type <ival> expressionArithmetique conjonction comparaison somme produit negation expressionPrioritaire var fonction	// A verifier (ival?)
+%type <sval> argument listArg
+
+%left PLUS MOINS
+%left FOIS DIVISE
 
 %start programme
+
 %%
 
 // Axiome de la grammaire
@@ -58,7 +64,7 @@ decDef : ligneDeclarationsVars
 
 
 // grammaire des expressions arithmetiques
-
+//expAriValue : expressionArithmetique {printf("%f \n", $1);}
 expressionArithmetique : expressionArithmetique OU conjonction 	{$$ = $1 || $3;}
 		|	conjonction											{$$ = $1;}
 		;
@@ -93,11 +99,11 @@ fonction : LIRE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE					{$$ = lire();}			// 
 	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE		{$$ = $1($3);}		// A verifier
 	;
 argument : listArg		{$$ = $1;}			// A Verifier
-		|				{$$ = /*$1*/;}		// A verifier
+		|				{$$ = NULL;}		// A verifier
 		;
 
-listArg : expressionArithmetique					{$$ = $1;}		// A verifier
-		|	expressionArithmetique VIRGULE listArg		{$$ = ;}	// A verifier
+listArg : expressionArithmetique						{$$ = $1;}		// A verifier
+		|	expressionArithmetique VIRGULE listArg		{$$ = $1 + "," + $3;}	// A verifier
 		;
 
 
