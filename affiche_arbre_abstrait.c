@@ -203,7 +203,8 @@ void affiche_opExp(n_exp *n)
   else if(n->u.opExp_.op == inferieur) affiche_xml_texte("inf", trace_abs);
   else if(n->u.opExp_.op == ou) affiche_xml_texte("ou", trace_abs);
   else if(n->u.opExp_.op == et) affiche_xml_texte("et", trace_abs);
-  else if(n->u.opExp_.op == non) affiche_xml_texte("non", trace_abs);  
+  else if(n->u.opExp_.op == non) affiche_xml_texte("non", trace_abs); 
+  /*else if(n->u.opExp_.op == prio) affiche_xml_texte("()", trace_abs);*/
   if( n->u.opExp_.op1 != NULL ) {
     affiche_exp(n->u.opExp_.op1);
   }

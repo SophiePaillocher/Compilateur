@@ -1,4 +1,5 @@
 *.o
 compilo
 analyseur_lexical_flex.c
-
+analyseur_syntaxique.tab.c
+analyseur_syntaxique.tab.h

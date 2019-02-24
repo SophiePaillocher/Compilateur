@@ -55,13 +55,13 @@ n_dec *cree_n_dec_var(char *nom);
 /* Crée un noeud du type déclaration de variable tableau, avec la taille donnée */
 n_dec *cree_n_dec_tab(char *nom, int taille);
 /* Crée un noeud du type déclaration de fonction avec ses paramètres, variables locales et corps de fonction */
-n_dec *cree_n_dec_fonc(char *nom, n_l_dec *param, n_l_dec *variables, n_instr *corps);
+n_dec *cree_n_dec_fonc(char *nom, n_l_dec *param, n_l_dec *variables, n_instr *corps); ////////////////////////ERREUR n_instr-->n_l_instr
 
 /*-------------------------------------------------------------------------*/
 
 /* ATTENTION : non => négation logique
-   Le opérateurs unaires ont op2 = NULL par convention */
-typedef enum {plus, moins, fois, divise, egal, inferieur, ou, et, non} operation; 
+   Les opérateurs unaires ont op2 = NULL par convention */
+typedef enum {plus, moins, fois, divise, egal, inferieur, ou, et, non/*, prio*/} operation; 
 
 /* Expression arithmétique ou logique (opExp) ou atomique (varExp, intExp, 
    appelExp, lireExp) */
@@ -109,7 +109,7 @@ struct n_instr_ {
 
 /* Crée un noeud de type instruction "si". Si il n'y a pas de "sinon", passer 
    sinon=NULL */
-n_instr *cree_n_instr_si(n_exp *test, n_instr *alors, n_instr *sinon);
+n_instr *cree_n_instr_si(n_exp *test, n_instr *alors, n_instr *sinon); 
 /* Crée un noeud de type instruction contenant un bloc d'instructions  */
 n_instr *cree_n_instr_bloc(n_l_instr *liste);
 /* Crée un noeud de type instruction "tantque" */

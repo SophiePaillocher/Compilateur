@@ -10,7 +10,7 @@ int yylex();          // declare dans analyseur lexical
 int yyerror(char *s); // declare ci-dessous
 %}
 
-%union {double dval; int ival; char sval[];} 		// A verifier (dval util?)
+%union {double dval; int ival; char* sval;} 		// A verifier (dval util?)
 %token OU
 %token ET
 %token NON
@@ -64,46 +64,46 @@ decDef : ligneDeclarationsVars
 
 
 // grammaire des expressions arithmetiques
-//expAriValue : expressionArithmetique {printf("%f \n", $1);}
-expressionArithmetique : expressionArithmetique OU conjonction 	{$$ = $1 || $3;}
-		|	conjonction											{$$ = $1;}
+//expAriValue : expressionArithmetique {printf(cree_n_exp_op(operation type, n_exp *op1, n_exp *op2);}
+expressionArithmetique : expressionArithmetique OU conjonction 	{$$ = cree_n_exp_op(ou, $1, $3);}
+		|	conjonction											{$$ = $1}
 		;
-conjonction : conjonction ET comparaison	{$$ = $1 && $3;}
+conjonction : conjonction ET comparaison	{$$ = $1 && $3; cree_n_exp_op(et, $1, $3);}
 		|	comparaison						{$$ = $1;}
 		;
-comparaison	: comparaison EGAL somme		{$$ = $1 == $3;}
-		|	comparaison INFERIEUR somme		{$$ = $1 < $3;}
-		|	comparaison SUPERIEUR somme		{$$ = $1 > $3;}
+comparaison	: comparaison EGAL somme		{$$ = cree_n_exp_op(egal, $1, $3);}
+		|	comparaison INFERIEUR somme		{$$ = cree_n_exp_op(inferieur, $1, $3);}
+//		|	comparaison SUPERIEUR somme		{$$ = cree_n_exp_op(operation type, n_exp *op1, n_exp *op2);}
 		| somme								{$$ = $1;}
 		;
-somme : somme PLUS produit		{$$ = $1 + $3;}
-	|	somme MOINS produit		{$$ = $1 - $3;}
+somme : somme PLUS produit		{$$ = cree_n_exp_op(plus, $1, $3);}
+	|	somme MOINS produit		{$$ = cree_n_exp_op(moins, $1, $3);}
 	|	produit					{$$ = $1;}
 	;
-produit : produit FOIS negation		{$$ = $1 * $3;}
-	|	produit DIVISE negation		{$$ = $1 / $3;}
+produit : produit FOIS negation		{$$ = cree_n_exp_op(fois, $1, $3);}
+	|	produit DIVISE negation		{$$ = cree_n_exp_op(divise, $1, $3);}
 	|	negation					{$$ = $1;}
 	;
-negation : NON negation		{$$ = ! $2;}
-	| expressionPrioritaire					{$$ = $1;}
+negation : NON negation			{$$ = cree_n_exp_op(non, $2, NULL);}
+	| expressionPrioritaire		{$$ = $1;}
 	;
-expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE		{$$ = $2;}
+expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE		{$$ = $2}
 		|	var																				{$$ = $1;}
 		|	NOMBRE																			{$$ = $1;}
 		| 	fonction																		{$$ = $1;}
 		;
-var : IDENTIF																				{$$ = $1;}	
-	| 	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT						{$$ = $1[$3];}				// A verifier
+var : IDENTIF																				{$$ = cree_n_exp_var($1);}	
+	| 	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT						{$$ = cree_n_exp_var($1[$3]);}		// A verifier!		
 	;
-fonction : LIRE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE					{$$ = lire();}			// A verifier
-	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE		{$$ = $1($3);}		// A verifier
+fonction : LIRE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE					{$$ = cree_n_exp_lire();}			
+	| 	IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE		{$$ = cree_n_exp_appel($1);}	//A verifier	
 	;
 argument : listArg		{$$ = $1;}			// A Verifier
 		|				{$$ = NULL;}		// A verifier
 		;
 
-listArg : expressionArithmetique						{$$ = $1;}		// A verifier
-		|	expressionArithmetique VIRGULE listArg		{$$ = $1 + "," + $3;}	// A verifier
+listArg : expressionArithmetique						{$$ = }		// A verifier
+		|	expressionArithmetique VIRGULE listArg		{$$ = }	// A verifier
 		;
 
 
@@ -117,18 +117,18 @@ instruction : affectation
 	|	blocInstructions
 	|	POINT_VIRGULE
 	;
-affectation : var EGAL expressionArithmetique POINT_VIRGULE ;
-condition : SI expressionArithmetique ALORS blocInstructions
-	|	SI expressionArithmetique ALORS blocInstructions SINON blocInstructions
+affectation : var EGAL expressionArithmetique POINT_VIRGULE 							{$$ = cree_n_instr_affect($1, $3);};
+condition : SI expressionArithmetique ALORS blocInstructions							{$$ = cree_n_instr_si($2, $4, NULL);}
+	|	SI expressionArithmetique ALORS blocInstructions SINON blocInstructions			{$$ = cree_n_instr_si($2, $4, $6);}
 	;
-boucle : TANTQUE expressionArithmetique FAIRE blocInstructions ;
+boucle : TANTQUE expressionArithmetique FAIRE blocInstructions 							{$$ = cree_n_instr_tantque($2, $4);};
 retour : RETOUR expressionArithmetique POINT_VIRGULE ;
 
-appelFonction : fonction POINT_VIRGULE
-	|	ECRIRE PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE POINT_VIRGULE
+appelFonction : fonction POINT_VIRGULE															{$$ = cree_n_instr_appel($1);}
+	|	ECRIRE PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE POINT_VIRGULE		{$$ = cree_n_instr_ecrire($3);}
 	;
-blocInstructions : ACCOLADE_OUVRANTE listInstructions ACCOLADE_FERMANTE ;
-listInstructions : instruction listInstructions
+blocInstructions : ACCOLADE_OUVRANTE listInstructions ACCOLADE_FERMANTE 				{$$ = cree_n_instr_bloc($2);};
+listInstructions : instruction listInstructions											{$$ = 
 	|
 	;
 
@@ -139,20 +139,17 @@ ligneDeclarationsVars : listDeclarationsVars POINT_VIRGULE ;
 listDeclarationsVars : declarationVar VIRGULE listDeclarationsVars								// Modifier les noms
 	|	declarationVar
 	;
-declarationVar : ENTIER IDENTIF
-	|	ENTIER IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT
+declarationVar : ENTIER IDENTIF															{$$ = cree_n_dec_var($2);}
+	|	ENTIER IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT			{$$ = cree_n_dec_tab($2, $4);}
 	;
 
 
 // Grammaire des definitions de fonctions
 
-definitionFct : IDENTIF PARENTHESE_OUVRANTE declarationsArgs PARENTHESE_FERMANTE blocDeclarationsVarsLocales blocInstructions ;
-
-
+definitionFct : IDENTIF PARENTHESE_OUVRANTE declarationsArgs PARENTHESE_FERMANTE blocDeclarationsVarsLocales blocInstructions ;		{cree_n_dec_fonc($1, $3, $5, $6);
 blocDeclarationsVarsLocales : ligneDeclarationsVars
 	|
 	;
-
 declarationsArgs : listDeclarationsVars
 	|
 	;
