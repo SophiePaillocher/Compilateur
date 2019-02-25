@@ -44,7 +44,7 @@ alphanum {lettre}|{chiffre}
 "lire"        {return LIRE;}
 "ecrire"      {return ECRIRE;}
 ","           {return VIRGULE;}
-[0-9]+        {/*yylval.ival = atoi(yytext);*/ return NOMBRE; }
+[0-9]+        {yylval.ival = atoi(yytext); return NOMBRE; }
 "entier"      {return ENTIER;}
 {lettre}{alphanum}*      {return IDENTIF;}
 [ \t\n]
