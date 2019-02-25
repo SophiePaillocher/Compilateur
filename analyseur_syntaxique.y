@@ -10,6 +10,11 @@ int yylex();          // declare dans analyseur lexical
 int yyerror(char *s); // declare ci-dessous
 %}
 
+%code requires
+{
+#include"syntabs.h" 
+}
+
 %union {
 	int ival; 
 	char* sval; 
@@ -54,19 +59,16 @@ int yyerror(char *s); // declare ci-dessous
 %token ECRIRE
 %token VIRGULE
 
-// 30
-%type <prog>  programme 		//1
-%type <l_dec> listDeclarationsVar listDefinitionFct ensembleDeclarationVar ensembleDefinitionFct ligneDeclarationsVar suiteDeclarationsVar blocDeclarationVarLocales declarationsArgs 		//8
-%type <dec>declarationVar definitionFct 		//2
-%type <l_instr> ensembleInstructions 		//1
-%type <instr> instruction affectation condition boucle retour appelFonction blocInstructions 		//7
-%type <l_exp> argument listArg 		//2
-%type <exp> expressionArithmetique conjonction comparaison somme produit negation expressionPrioritaire		//7
-%type <var> varAcces 		//1
-%type <appel> fonction 		//1
 
-//%left PLUS MOINS
-//%left FOIS DIVISE
+%type <prog>  programme 	
+%type <l_dec> listDeclarationsVar listDefinitionFct ensembleDeclarationVar ensembleDefinitionFct ligneDeclarationsVar suiteDeclarationsVar blocDeclarationVarLocales declarationsArgs 		
+%type <dec>declarationVar definitionFct 		
+%type <l_instr> ensembleInstructions 
+%type <instr> instruction affectation condition boucle retour appelFonction blocInstructions 		
+%type <l_exp> argument listArg 		
+%type <exp> expressionArithmetique conjonction comparaison somme produit negation expressionPrioritaire		
+%type <var> varAcces 		
+%type <appel> fonction 		
 
 %start programme
 
@@ -74,19 +76,6 @@ int yyerror(char *s); // declare ci-dessous
 
 // Axiome de la grammaire
 
-//// Acien axiome
-/*programme : ensembleDecDef						
-	|											
-	;
-ensembleDecDef : decDef ensembleDecDef			
-	|	decDef
-	;
-decDef : ligneDeclarationsVars
-	| definitionFct
-	;
-*/
-
-//// Nouvel Axiome
 programme : listDeclarationsVar listDefinitionFct							{$$ = cree_n_prog($1, $2);};
 listDeclarationsVar : 	ensembleDeclarationVar 								{$$ = $1;}
 		|																	{$$ = NULL;}
@@ -112,7 +101,6 @@ conjonction : conjonction ET comparaison	{$$ = cree_n_exp_op(et, $1, $3);}
 		;
 comparaison	: comparaison EGAL somme		{$$ = cree_n_exp_op(egal, $1, $3);}
 		|	comparaison INFERIEUR somme		{$$ = cree_n_exp_op(inferieur, $1, $3);}
-//		|	comparaison SUPERIEUR somme		{$$ = cree_n_exp_op(operation type, n_exp *op1, n_exp *op2);}
 		| somme								{$$ = $1;}
 		;
 somme : somme PLUS produit			{$$ = cree_n_exp_op(plus, $1, $3);}
@@ -140,8 +128,8 @@ argument : listArg		{$$ = $1;}
 		|				{$$ = NULL;}		
 		;
 
-listArg : expressionArithmetique						{$$ = cree_n_l_exp($1, Null);}		
-		|	listArg VIRGULE expressionArithmetique		{$$ = cree_n_l_exp($1, $3;}	
+listArg : expressionArithmetique						{$$ = cree_n_l_exp($1, NULL);}		
+		|	listArg VIRGULE expressionArithmetique		{$$ = cree_n_l_exp($1, $3);}	
 		;
 
 

@@ -2,14 +2,14 @@ LEX = flex
 YACC = bison -d -t
 CC = gcc
 
-LIBS = -lm 
+LIBS = -lm
 CCFLAGS = -Wall -ggdb
 
 OBJ = analyseur_lexical_flex.o util.o
 
 all: compilo
 
-compilo: compilo.c analyseur_syntaxique.tab.o analyseur_lexical_flex.o
+compilo: compilo.c analyseur_syntaxique.tab.o analyseur_lexical_flex.o syntabs.o
 		$(CC) -o $@ $^
 
 analyseur_syntaxique.tab.c: analyseur_syntaxique.y

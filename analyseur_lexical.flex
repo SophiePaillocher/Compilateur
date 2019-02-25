@@ -1,21 +1,21 @@
 /*
  * Analyseur lexical du compilateur L en FLEX
- */ 
+ */
 %{
 /* code copié AU DÉBUT de l'analyseur */
-
-#include "symboles.h"
+#include "syntabs.h" 
+#include "analyseur_syntaxique.tab.h"
 %}
 %option yylineno
 %option nounput
 %option noinput
 
 /* Déclarations à compléter ... */
-                    
+
 lettre [A-Za-z\$_]
 chiffre [0-9]
-alphanum {lettre}|{chiffre}                   
-                    
+alphanum {lettre}|{chiffre}
+
 %%
 
 "="           {return EGAL;}
@@ -31,7 +31,6 @@ alphanum {lettre}|{chiffre}
 "{"           {return ACCOLADE_OUVRANTE;}
 "}"           {return ACCOLADE_FERMANTE;}
 "<"           {return INFERIEUR;}
-">"			  {return SUPERIEUR;}
 "&"           {return ET;}
 "|"           {return OU;}
 "!"           {return NON;}
@@ -59,8 +58,8 @@ int yywrap(){
 }
 
 /***********************************************************************
- * Fonction auxiliaire appelée par l'analyseur syntaxique pour 
- * afficher des messages d'erreur et l'arbre XML 
+ * Fonction auxiliaire appelée par l'analyseur syntaxique pour
+ * afficher des messages d'erreur et l'arbre XML
  **********************************************************************/
 
 char *tableMotsClefs[] = {"si", "alors", "sinon", "tantque", "faire", "entier", "retour", "lire", "ecrire"};
@@ -68,7 +67,7 @@ int codeMotClefs[] = {SI, ALORS, SINON, TANTQUE, FAIRE, ENTIER, RETOUR, LIRE, EC
 int nbMotsClefs = 9;
 
 void nom_token( int token, char *nom, char *valeur ) {
-  int i;    
+  int i;
   strcpy( nom, "symbole" );
   if(token == POINT_VIRGULE) strcpy( valeur, "POINT_VIRGULE");
   else if(token == PLUS) strcpy(valeur, "PLUS");
@@ -86,15 +85,15 @@ void nom_token( int token, char *nom, char *valeur ) {
   else if(token == SUPERIEUR) strcpy(valeur, "SUPERIEUR");
   else if(token == ET) strcpy(valeur, "ET");
   else if(token == OU) strcpy(valeur, "OU");
-  else if(token == NON) strcpy(valeur, "NON");   
-  else if(token == VIRGULE) strcpy(valeur, "VIRGULE"); 
+  else if(token == NON) strcpy(valeur, "NON");
+  else if(token == VIRGULE) strcpy(valeur, "VIRGULE");
   else if( token == IDENTIF ) {
-    strcpy( nom, "identificateur" );    
-    strcpy( valeur, yytext );    
+    strcpy( nom, "identificateur" );
+    strcpy( valeur, yytext );
   }
   else if( token == NOMBRE ) {
     strcpy( nom, "nombre" );
-    strcpy( valeur, yytext ); 
+    strcpy( valeur, yytext );
   }
   else {
     strcpy(nom, "mot_clef");
@@ -104,6 +103,5 @@ void nom_token( int token, char *nom, char *valeur ) {
         break;
       }
     }
-  }  
+  }
 }
-

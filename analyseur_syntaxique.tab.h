@@ -39,6 +39,12 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 14 "analyseur_syntaxique.y" /* yacc.c:1909  */
+
+#include"syntabs.h" 
+
+#line 48 "analyseur_syntaxique.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -82,7 +88,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 13 "analyseur_syntaxique.y" /* yacc.c:1909  */
+#line 18 "analyseur_syntaxique.y" /* yacc.c:1909  */
 
 	int ival; 
 	char* sval; 
@@ -96,7 +102,7 @@ union YYSTYPE
 	n_var* var;
 	n_appel* appel;
 
-#line 100 "analyseur_syntaxique.tab.h" /* yacc.c:1909  */
+#line 106 "analyseur_syntaxique.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
