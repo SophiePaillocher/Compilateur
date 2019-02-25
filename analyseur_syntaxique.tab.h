@@ -57,22 +57,23 @@ extern int yydebug;
     DIVISE = 267,
     PARENTHESE_OUVRANTE = 268,
     PARENTHESE_FERMANTE = 269,
-    NOMBRE = 270,
-    POINT_VIRGULE = 271,
-    CROCHET_OUVRANT = 272,
-    CROCHET_FERMANT = 273,
-    ACCOLADE_OUVRANTE = 274,
-    ACCOLADE_FERMANTE = 275,
-    SI = 276,
-    ALORS = 277,
-    SINON = 278,
-    TANTQUE = 279,
-    FAIRE = 280,
-    ENTIER = 281,
-    RETOUR = 282,
-    LIRE = 283,
-    ECRIRE = 284,
-    VIRGULE = 285
+    IDENTIF = 270,
+    NOMBRE = 271,
+    POINT_VIRGULE = 272,
+    CROCHET_OUVRANT = 273,
+    CROCHET_FERMANT = 274,
+    ACCOLADE_OUVRANTE = 275,
+    ACCOLADE_FERMANTE = 276,
+    SI = 277,
+    ALORS = 278,
+    SINON = 279,
+    TANTQUE = 280,
+    FAIRE = 281,
+    ENTIER = 282,
+    RETOUR = 283,
+    LIRE = 284,
+    ECRIRE = 285,
+    VIRGULE = 286
   };
 #endif
 
@@ -82,9 +83,20 @@ extern int yydebug;
 union YYSTYPE
 {
 #line 13 "analyseur_syntaxique.y" /* yacc.c:1909  */
-double dval; int ival; /*char sval[];*/
 
-#line 88 "analyseur_syntaxique.tab.h" /* yacc.c:1909  */
+	int ival; 
+	char* sval; 
+	n_prog* prog;
+	n_l_dec* l_dec;
+	n_dec* dec;
+	n_l_instr* l_instr; 
+	n_instr* instr;
+	n_l_exp* l_exp;
+	n_exp* exp;
+	n_var* var;
+	n_appel* appel;
+
+#line 100 "analyseur_syntaxique.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

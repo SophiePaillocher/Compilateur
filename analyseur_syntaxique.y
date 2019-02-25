@@ -177,7 +177,7 @@ ensembleInstructions : ensembleInstructions	instruction 										{$$ = cree_n_l
 // Grammaire des declarations de variables
 
 ligneDeclarationsVar : suiteDeclarationsVar POINT_VIRGULE 									{$$ = $1;};
-suiteDeclarationsVar: suiteDeclarationsVars VIRGULE declarationVar							{$$ = cree_n_l_dec($1, $3);}				
+suiteDeclarationsVar: suiteDeclarationsVar VIRGULE declarationVar							{$$ = cree_n_l_dec($1, $3);}				
 		|	declarationVar																	{$$ = cree_n_l_dec($1, NULL);}
 		;
 declarationVar : ENTIER IDENTIF																{$$ = cree_n_dec_var($2);}
@@ -189,11 +189,11 @@ declarationVar : ENTIER IDENTIF																{$$ = cree_n_dec_var($2);}
 
 definitionFct : IDENTIF PARENTHESE_OUVRANTE declarationsArgs PARENTHESE_FERMANTE blocDeclarationVarLocales blocInstructions 		{$$ = cree_n_dec_fonc($1, $3, $5, $6);};
 
-blocDeclarationVarLocales : ligneDeclarationsVar				{$$	= $1;}
+blocDeclarationVarLocales : ligneDeclarationsVar				{$$ = $1;}
 		|														{$$ = NULL;}
 		;
 
-declarationsArgs : suiteDeclarationsVars						{$$ = $1;}
+declarationsArgs : suiteDeclarationsVar						{$$ = $1;}
 		|														{$$ = NULL;}
 		;
 
