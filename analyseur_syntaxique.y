@@ -12,23 +12,23 @@ int yyerror(char *s); // declare ci-dessous
 
 %code requires
 {
-#include"syntabs.h" 
+#include"syntabs.h"
 }
 
 %union {
-	int ival; 
-	char* sval; 
+	int ival;
+	char* sval;
 	n_prog* prog;
 	n_l_dec* l_dec;
 	n_dec* dec;
-	n_l_instr* l_instr; 
+	n_l_instr* l_instr;
 	n_instr* instr;
 	n_l_exp* l_exp;
 	n_exp* exp;
 	n_var* var;
 	n_appel* appel;
 }
- 		
+
 %token OU
 %token ET
 %token NON
@@ -42,7 +42,7 @@ int yyerror(char *s); // declare ci-dessous
 %token PARENTHESE_OUVRANTE
 %token PARENTHESE_FERMANTE
 %token <sval> IDENTIF
-%token <ival> NOMBRE			
+%token <ival> NOMBRE
 %token POINT_VIRGULE
 %token CROCHET_OUVRANT
 %token CROCHET_FERMANT
@@ -60,15 +60,15 @@ int yyerror(char *s); // declare ci-dessous
 %token VIRGULE
 
 
-%type <prog>  programme 	
-%type <l_dec> listDeclarationsVar listDefinitionFct ensembleDeclarationVar ensembleDefinitionFct ligneDeclarationsVar suiteDeclarationsVar blocDeclarationVarLocales declarationsArgs 		
-%type <dec>declarationVar definitionFct 		
-%type <l_instr> ensembleInstructions 
-%type <instr> instruction affectation condition boucle retour appelFonction blocInstructions 		
-%type <l_exp> argument listArg 		
-%type <exp> expressionArithmetique conjonction comparaison somme produit negation expressionPrioritaire		
-%type <var> varAcces 		
-%type <appel> fonction 		
+%type <prog>  programme
+%type <l_dec> listDeclarationsVar listDefinitionFct ensembleDefinitionFct ligneDeclarationsVar suiteDeclarationsVar blocDeclarationVarLocales declarationsArgs
+%type <dec>declarationVar definitionFct
+%type <l_instr> ensembleInstructions
+%type <instr> instruction affectation condition boucle retour appelFonction blocInstructions
+%type <l_exp> argument listArg
+%type <exp> expressionArithmetique conjonction comparaison somme produit negation expressionPrioritaire
+%type <var> varAcces
+%type <appel> fonction
 
 %start programme
 
@@ -76,20 +76,20 @@ int yyerror(char *s); // declare ci-dessous
 
 // Axiome de la grammaire
 
-programme : listDeclarationsVar listDefinitionFct							{$$ = cree_n_prog($1, $2);};
-listDeclarationsVar : 	ensembleDeclarationVar 								{$$ = $1;}
-		|																	{$$ = NULL;}
-		;
-ensembleDeclarationVar : ensembleDeclarationVar ligneDeclarationsVar		{$$ = cree_n_l_dec($1, $2);}	
-		|	ligneDeclarationsVar											{$$ = cree_n_l_dec($1, NULL);}
-		;
+programme : ligneDeclarationsVar listDefinitionFct							{$$ = cree_n_prog($1, $2);};
+//listDeclarationsVar : 	ligneDeclarationsVar 									{$$ = $1;}
+//			|																	{$$ = NULL;}
+//			;
+//ensembleDeclarationVar : ensembleDeclarationVar ligneDeclarationsVar		{$$ = cree_n_l_dec($1, $2);}
+//		|	ligneDeclarationsVar											{$$ = cree_n_l_dec($1, NULL);}
+//		;
 
 listDefinitionFct : ensembleDefinitionFct									{$$ = $1;}
-		| 																	{$$ = NULL;}			
-		;		
-ensembleDefinitionFct : ensembleDefinitionFct definitionFct 				{$$ = cree_n_l_dec($1, $2);}
+		| 																	{$$ = NULL;}
+		;
+ensembleDefinitionFct : definitionFct ensembleDefinitionFct 				{$$ = cree_n_l_dec($1, $2);}
 		|	definitionFct													{$$ = cree_n_l_dec($1, NULL);}
-		; 
+		;
 
 
 // grammaire des expressions arithmetiques
@@ -116,20 +116,20 @@ negation : NON negation				{$$ = cree_n_exp_op(non, $2, NULL);}
 		;
 expressionPrioritaire : PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE		{$$ = $2;}
 		|	varAcces																		{$$ = cree_n_exp_var($1);}
-		|	NOMBRE																			{$$ = cree_n_exp_entier($1);}		//Attention Valeur (pas pointeur)
+		|	NOMBRE																			{$$ = cree_n_exp_entier($1);}																		//Attention Valeur (pas pointeur)
 		| 	fonction																		{$$ = cree_n_exp_appel($1);}
 		|  	LIRE PARENTHESE_OUVRANTE PARENTHESE_FERMANTE									{$$ = cree_n_exp_lire();}
 		;
-varAcces : IDENTIF																			{$$ = cree_n_var_simple($1);}	
-		|	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT					{$$ = cree_n_var_indicee($1, $3);}	
+varAcces : IDENTIF																			{$$ = cree_n_var_simple($1);}
+		|	IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT					{$$ = cree_n_var_indicee($1, $3);}
 		;
 fonction : IDENTIF PARENTHESE_OUVRANTE argument PARENTHESE_FERMANTE							{$$ = cree_n_appel($1, $3);};
-argument : listArg		{$$ = $1;}			
-		|				{$$ = NULL;}		
+argument : listArg		{$$ = $1;}
+		|				{$$ = NULL;}
 		;
 
-listArg : expressionArithmetique						{$$ = cree_n_l_exp($1, NULL);}		
-		|	listArg VIRGULE expressionArithmetique		{$$ = cree_n_l_exp($1, $3);}	
+listArg : expressionArithmetique						{$$ = cree_n_l_exp($1, NULL);}
+		|	expressionArithmetique VIRGULE 	listArg	{$$ = cree_n_l_exp($1, $3);}
 		;
 
 
@@ -156,7 +156,7 @@ appelFonction : fonction POINT_VIRGULE																{$$ = cree_n_instr_appel($
 blocInstructions : ACCOLADE_OUVRANTE ensembleInstructions ACCOLADE_FERMANTE 				{$$ = cree_n_instr_bloc($2);}
 		|	ACCOLADE_OUVRANTE ACCOLADE_FERMANTE 										{$$ = NULL;}
 		;
-ensembleInstructions : ensembleInstructions	instruction 										{$$ = cree_n_l_instr($1, $2);};
+ensembleInstructions : instruction ensembleInstructions											{$$ = cree_n_l_instr($1, $2);};
 		|	instruction																	{$$ = cree_n_l_instr($1, NULL);};
 		;
 
@@ -165,7 +165,7 @@ ensembleInstructions : ensembleInstructions	instruction 										{$$ = cree_n_l
 // Grammaire des declarations de variables
 
 ligneDeclarationsVar : suiteDeclarationsVar POINT_VIRGULE 									{$$ = $1;};
-suiteDeclarationsVar: suiteDeclarationsVar VIRGULE declarationVar							{$$ = cree_n_l_dec($1, $3);}				
+suiteDeclarationsVar: declarationVar	 VIRGULE suiteDeclarationsVar						{$$ = cree_n_l_dec($1, $3);}
 		|	declarationVar																	{$$ = cree_n_l_dec($1, NULL);}
 		;
 declarationVar : ENTIER IDENTIF																{$$ = cree_n_dec_var($2);}

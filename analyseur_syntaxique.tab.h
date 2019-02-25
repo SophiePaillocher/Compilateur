@@ -42,7 +42,7 @@ extern int yydebug;
 /* "%code requires" blocks.  */
 #line 14 "analyseur_syntaxique.y" /* yacc.c:1909  */
 
-#include"syntabs.h" 
+#include"syntabs.h"
 
 #line 48 "analyseur_syntaxique.tab.h" /* yacc.c:1909  */
 
@@ -90,12 +90,12 @@ union YYSTYPE
 {
 #line 18 "analyseur_syntaxique.y" /* yacc.c:1909  */
 
-	int ival; 
-	char* sval; 
+	int ival;
+	char* sval;
 	n_prog* prog;
 	n_l_dec* l_dec;
 	n_dec* dec;
-	n_l_instr* l_instr; 
+	n_l_instr* l_instr;
 	n_instr* instr;
 	n_l_exp* l_exp;
 	n_exp* exp;
