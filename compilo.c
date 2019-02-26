@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "syntabs.h"
+#include "affiche_arbre_abstrait.h"
 #include "analyseur_syntaxique.tab.h"
 #include "analyseur_lexical_flex.h"
 

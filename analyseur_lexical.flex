@@ -4,6 +4,7 @@
 %{
 /* code copié AU DÉBUT de l'analyseur */
 #include "syntabs.h" 
+#include "affiche_arbre_abstrait.h"
 #include "analyseur_syntaxique.tab.h"
 %}
 %option yylineno
