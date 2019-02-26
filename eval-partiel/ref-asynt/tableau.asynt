@@ -1,0 +1,28 @@
+<prog>
+  <l_dec>
+    <tabDec>$tab[10]</tabDec>
+  </l_dec>
+  <l_dec>
+    <foncDec>
+main      <l_instr>
+        <instr_affect>
+          <var_indicee>
+            <var_base_tableau>$tab</var_base_tableau>
+            <intExp>4</intExp>
+          </var_indicee>
+          <intExp>4</intExp>
+        </instr_affect>
+        <l_instr>
+          <instr_ecrire>
+            <varExp>
+              <var_indicee>
+                <var_base_tableau>$tab</var_base_tableau>
+                <intExp>4</intExp>
+              </var_indicee>
+            </varExp>
+          </instr_ecrire>
+        </l_instr>
+      </l_instr>
+    </foncDec>
+  </l_dec>
+</prog>

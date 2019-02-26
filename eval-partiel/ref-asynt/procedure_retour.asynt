@@ -1,0 +1,25 @@
+<prog>
+  <l_dec>
+    <foncDec>
+procedure      <l_instr>
+        <instr_retour>
+          <intExp>1</intExp>
+        </instr_retour>
+      </l_instr>
+    </foncDec>
+    <l_dec>
+      <foncDec>
+main        <l_instr>
+          <instr_ecrire>
+            <appelExp>
+              <appel>
+procedure                <l_exp>
+                </l_exp>
+              </appel>
+            </appelExp>
+          </instr_ecrire>
+        </l_instr>
+      </foncDec>
+    </l_dec>
+  </l_dec>
+</prog>

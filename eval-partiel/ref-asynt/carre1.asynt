@@ -1,0 +1,25 @@
+<prog>
+  <l_dec>
+    <foncDec>
+main      <l_dec>
+        <varDec>$rond</varDec>
+      </l_dec>
+      <l_instr>
+        <instr_affect>
+          <var_simple>$rond</var_simple>
+          <lireExp>
+          </lireExp>
+        </instr_affect>
+        <l_instr>
+          <instr_ecrire>
+            <opExp>
+carre              <varExp>
+                <var_simple>$rond</var_simple>
+              </varExp>
+            </opExp>
+          </instr_ecrire>
+        </l_instr>
+      </l_instr>
+    </foncDec>
+  </l_dec>
+</prog>

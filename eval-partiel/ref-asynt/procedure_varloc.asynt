@@ -1,0 +1,34 @@
+<prog>
+  <l_dec>
+    <foncDec>
+procedure      <l_dec>
+        <varDec>$a</varDec>
+      </l_dec>
+      <l_instr>
+        <instr_affect>
+          <var_simple>$a</var_simple>
+          <intExp>1</intExp>
+        </instr_affect>
+        <l_instr>
+          <instr_ecrire>
+            <varExp>
+              <var_simple>$a</var_simple>
+            </varExp>
+          </instr_ecrire>
+        </l_instr>
+      </l_instr>
+    </foncDec>
+    <l_dec>
+      <foncDec>
+main        <l_instr>
+          <instr_appel>
+            <appel>
+procedure              <l_exp>
+              </l_exp>
+            </appel>
+          </instr_appel>
+        </l_instr>
+      </foncDec>
+    </l_dec>
+  </l_dec>
+</prog>

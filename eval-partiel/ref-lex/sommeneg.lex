@@ -1,0 +1,14 @@
+main	identificateur	main
+(	symbole	PARENTHESE_OUVRANTE
+)	symbole	PARENTHESE_FERMANTE
+{	symbole	ACCOLADE_OUVRANTE
+ecrire	mot_clef	ecrire
+(	symbole	PARENTHESE_OUVRANTE
+!	symbole	NON
+5	nombre	5
++	symbole	PLUS
+!	symbole	NON
+8	nombre	8
+)	symbole	PARENTHESE_FERMANTE
+;	symbole	POINT_VIRGULE
+}	symbole	ACCOLADE_FERMANTE
