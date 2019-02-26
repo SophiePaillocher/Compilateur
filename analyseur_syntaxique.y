@@ -61,7 +61,7 @@ int yyerror(char *s); // declare ci-dessous
 
 
 %type <prog>  programme
-%type <l_dec> listDeclarationsVar listDefinitionFct ensembleDefinitionFct ligneDeclarationsVar suiteDeclarationsVar blocDeclarationVarLocales declarationsArgs
+%type <l_dec> DeclarationsVarGlobal listDefinitionFct ensembleDefinitionFct ligneDeclarationsVar suiteDeclarationsVar blocDeclarationVarLocales declarationsArgs
 %type <dec>declarationVar definitionFct
 %type <l_instr> ensembleInstructions
 %type <instr> instruction affectation condition boucle retour appelFonction blocInstructions
@@ -76,10 +76,10 @@ int yyerror(char *s); // declare ci-dessous
 
 // Axiome de la grammaire
 
-programme : ligneDeclarationsVar listDefinitionFct							{$$ = cree_n_prog($1, $2);};
-//listDeclarationsVar : 	ligneDeclarationsVar 									{$$ = $1;}
-//			|																	{$$ = NULL;}
-//			;
+programme : DeclarationsVarGlobal listDefinitionFct							{$$ = cree_n_prog($1, $2);};
+DeclarationsVarGlobal : ligneDeclarationsVar 								{$$ = $1;}
+			|																{$$ = NULL;}
+			;
 //ensembleDeclarationVar : ensembleDeclarationVar ligneDeclarationsVar		{$$ = cree_n_l_dec($1, $2);}
 //		|	ligneDeclarationsVar											{$$ = cree_n_l_dec($1, NULL);}
 //		;
@@ -154,10 +154,10 @@ appelFonction : fonction POINT_VIRGULE																{$$ = cree_n_instr_appel($
 		|	ECRIRE PARENTHESE_OUVRANTE expressionArithmetique PARENTHESE_FERMANTE POINT_VIRGULE		{$$ = cree_n_instr_ecrire($3);}
 		;
 blocInstructions : ACCOLADE_OUVRANTE ensembleInstructions ACCOLADE_FERMANTE 				{$$ = cree_n_instr_bloc($2);}
-		|	ACCOLADE_OUVRANTE ACCOLADE_FERMANTE 										{$$ = NULL;}
+		|	ACCOLADE_OUVRANTE ACCOLADE_FERMANTE 											{$$ = NULL;}
 		;
-ensembleInstructions : instruction ensembleInstructions											{$$ = cree_n_l_instr($1, $2);};
-		|	instruction																	{$$ = cree_n_l_instr($1, NULL);};
+ensembleInstructions : instruction ensembleInstructions										{$$ = cree_n_l_instr($1, $2);};
+		|	instruction																		{$$ = cree_n_l_instr($1, NULL);};
 		;
 
 
@@ -169,7 +169,7 @@ suiteDeclarationsVar: declarationVar	 VIRGULE suiteDeclarationsVar						{$$ = cr
 		|	declarationVar																	{$$ = cree_n_l_dec($1, NULL);}
 		;
 declarationVar : ENTIER IDENTIF																{$$ = cree_n_dec_var($2);}
-		|	ENTIER IDENTIF CROCHET_OUVRANT expressionArithmetique CROCHET_FERMANT			{$$ = cree_n_dec_tab($2, $4);}
+		|	ENTIER IDENTIF CROCHET_OUVRANT NOMBRE CROCHET_FERMANT			{$$ = cree_n_dec_tab($2, $4);}
 		;
 
 
@@ -181,7 +181,7 @@ blocDeclarationVarLocales : ligneDeclarationsVar				{$$ = $1;}
 		|														{$$ = NULL;}
 		;
 
-declarationsArgs : suiteDeclarationsVar						{$$ = $1;}
+declarationsArgs : suiteDeclarationsVar							{$$ = $1;}
 		|														{$$ = NULL;}
 		;
 
