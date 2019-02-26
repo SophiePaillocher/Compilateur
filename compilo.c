@@ -9,7 +9,7 @@
 
 FILE *yyin;
 extern char *yytext;   // déclaré dans analyseur_lexical
-
+n_prog * n;
 
 
 /***********************************************************************
@@ -96,7 +96,8 @@ int main(int argc, char **argv) {
   }
   if( affiche_syntaxe_abstraite ) {
 	yyparse();
-	printf("Compilation complete!");
+	affiche_n_prog(n);
+	printf("\nCompilation complete!\n");
   }
   if(affiche_code3a){
   	//Affiche code 3a

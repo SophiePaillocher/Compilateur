@@ -77,7 +77,7 @@ int yyerror(char *s); // declare ci-dessous
 
 // Axiome de la grammaire
 
-programme : DeclarationVarGlobales listDefinitionFct						{$$ = cree_n_prog($1, $2); affiche_n_prog($$);};
+programme : DeclarationVarGlobales listDefinitionFct						{$$ = cree_n_prog($1, $2);};
 DeclarationVarGlobales : ligneDeclarationsVar 								{$$ = $1;}
 			|																{$$ = NULL;}
 			;
