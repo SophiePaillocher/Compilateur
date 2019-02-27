@@ -40,7 +40,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 14 "analyseur_syntaxique.y" /* yacc.c:1909  */
+#line 15 "analyseur_syntaxique.y" /* yacc.c:1909  */
 
 #include"syntabs.h"
 
@@ -88,7 +88,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 18 "analyseur_syntaxique.y" /* yacc.c:1909  */
+#line 19 "analyseur_syntaxique.y" /* yacc.c:1909  */
 
 	int ival;
 	char* sval;
