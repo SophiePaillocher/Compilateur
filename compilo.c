@@ -96,8 +96,8 @@ int main(int argc, char **argv) {
   }
   if( affiche_syntaxe_abstraite ) {
 	yyparse();
-	//affiche_n_prog(n);
-	printf("\nCompilation complete!\n");
+	affiche_n_prog(n);
+	//printf("\nCompilation complete!\n");
   }
   if(affiche_code3a){
   	//Affiche code 3a
