@@ -39,7 +39,7 @@ struct n_prog_ {
 n_prog *cree_n_prog(n_l_dec *variables, n_l_dec *fonctions);
 /*-------------------------------------------------------------------------*/
 
-// Recherche : n_l_instr
+// Recherche : cree_n_exp_entier
 
 /* Déclaration de fonction, variable simple ou variable tableau */
 struct n_dec_ {
