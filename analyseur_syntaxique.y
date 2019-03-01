@@ -68,7 +68,7 @@ int yyerror(char *s); // declare ci-dessous
 
 %type <l_dec> declarationsArgs
 %type <dec> declarationVar
-%type <l_dec> suiteDeclationsVar
+%type <l_dec> suiteDeclarationsVar
 %type <l_dec> ligneDeclarationsVar
 
 %type <instr> affectation condition boucle retour appelFonction blocInstructions
@@ -170,7 +170,7 @@ argument : expressionArithmetique listArg	{$$=cree_n_l_exp($1,$2);}
 		|				{$$ = NULL;}
 		;
 
-listArg : VIGULE expressionArithmetique	listArg				{$$ = cree_n_l_exp($2, $3);}
+listArg : VIRGULE expressionArithmetique	listArg				{$$ = cree_n_l_exp($2, $3);}
 		|				{$$=NULL;}
 		;
 
