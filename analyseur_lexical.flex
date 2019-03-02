@@ -46,7 +46,7 @@ alphanum {lettre}|{chiffre}
 ","           {return VIRGULE;}
 [0-9]+        {yylval.ival = atoi(yytext); return NOMBRE; }
 "entier"      {return ENTIER;}
-{lettre}{alphanum}*      {return IDENTIF;}
+{lettre}{alphanum}*      {yylval.sval = strdup(yytext); return IDENTIF;}
 [ \t\n]
 "#".*
 

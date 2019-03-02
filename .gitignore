@@ -2,3 +2,7 @@
 compilo
 analyseur_syntaxique.tab.c
 analyseur_syntaxique.tab.h
+analyseur_lexical_flex.c
+analyseur_lexical_flex.h
+eval-partiel/output/
+compare_arbres_xml

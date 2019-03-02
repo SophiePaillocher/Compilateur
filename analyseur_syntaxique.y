@@ -92,7 +92,7 @@ int yyerror(char *s); // declare ci-dessous
 
 // Axiome de la grammaire
 
-programme : ligneDeclarationsVar ensembleDefinitionFct	{$$ = cree_n_prog($1, $2);};
+programme : ligneDeclarationsVar ensembleDefinitionFct	{$$ = n = cree_n_prog($1, $2);};
 
 
 // Grammaire des declarations de variables
