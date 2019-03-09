@@ -82,6 +82,16 @@ n_l_exp *cree_n_l_exp(n_exp *tete, n_l_exp *queue)
   n_l_exp *n = malloc(sizeof(n_l_exp));
   n->tete = tete;
   n->queue = queue;
+
+  if(queue == NULL)
+  {
+    n->size = 1;
+  } 
+  else
+  {
+    n->size = queue->size +1;
+  }
+  
   return n;
 }
 
@@ -193,6 +203,16 @@ n_l_dec *cree_n_l_dec(n_dec *tete, n_l_dec *queue)
   n_l_dec *n = malloc(sizeof(n_l_dec));
   n->tete = tete;
   n->queue = queue;
+
+  if(queue == NULL)
+  {
+    n->size = 1;
+  } 
+  else
+  {
+    n->size = queue->size +1;
+  }
+   
   return n;
 }
 

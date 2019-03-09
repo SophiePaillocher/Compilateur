@@ -1,6 +1,18 @@
 #include <stdio.h>
 #include "syntabs.h"
 #include "util.h"
+#include "tabsymboles.h"
+//#include "tabsymboles.c"
+
+extern tabsymboles_ tabsymboles;
+
+extern int portee;
+extern int adresseGlobaleCourante;
+extern int adresseLocaleCourante;
+extern int adresseArgumentCourant;
+
+
+int trace_tabsymb = 1; // à Editer
 
 void parcours_n_prog(n_prog *n);
 void parcours_l_instr(n_l_instr *n);
@@ -34,12 +46,21 @@ int trace_abs = 1;
 
 void parcours_n_prog(n_prog *n)
 {
-  char *fct = "prog";
-  //parcours_balise_ouvrante(fct, trace_abs);
+  entreeProgramme();
 
   parcours_l_dec(n->variables);
   parcours_l_dec(n->fonctions);
-  //parcours_balise_fermante(fct, trace_abs);
+
+  if(rechercheExecutable("main") != -1)
+  {
+    if(tabsymboles.tab[rechercheExecutable("main")].complement == 0)
+    {
+
+    }
+    //else erreur!
+  } 
+  //else erreur!
+  
 }
 
 /*-------------------------------------------------------------------------*/
@@ -47,12 +68,13 @@ void parcours_n_prog(n_prog *n)
 
 void parcours_l_instr(n_l_instr *n)
 {
-  char *fct = "l_instr";
-  if(n){
-  //parcours_balise_ouvrante(fct, trace_abs);
+  
+  if(n)
+  {
+  
   parcours_instr(n->tete);
   parcours_l_instr(n->queue);
-  //parcours_balise_fermante(fct, trace_abs);
+  
   }
 }
 
@@ -75,97 +97,90 @@ void parcours_instr(n_instr *n)
 
 void parcours_instr_si(n_instr *n)
 {
-  char *fct = "instr_si";
-  //parcours_balise_ouvrante(fct, trace_abs);
 
   parcours_exp(n->u.si_.test);
   parcours_instr(n->u.si_.alors);
   if(n->u.si_.sinon){
     parcours_instr(n->u.si_.sinon);
   }
-  //parcours_balise_fermante(fct, trace_abs);
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_tantque(n_instr *n)
 {
-  char *fct = "instr_tantque";
-  //parcours_balise_ouvrante(fct, trace_abs);
 
   parcours_exp(n->u.tantque_.test);
   parcours_instr(n->u.tantque_.faire);
-  //parcours_balise_fermante(fct, trace_abs);
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_affect(n_instr *n)
 {
-  char *fct = "instr_affect";
-  //parcours_balise_ouvrante(fct, trace_abs);
-
 
   parcours_var(n->u.affecte_.var);
   parcours_exp(n->u.affecte_.exp);
-  //parcours_balise_fermante(fct, trace_abs);
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_appel(n_instr *n)
 {
-  char *fct = "instr_appel";
-  //parcours_balise_ouvrante(fct, trace_abs);
-
 
   parcours_appel(n->u.appel);
-  //parcours_balise_fermante(fct, trace_abs);
+  
 }
 /*-------------------------------------------------------------------------*/
 
 void parcours_appel(n_appel *n)
 {
-  char *fct = "appel";
-  //parcours_balise_ouvrante(fct, trace_abs);
-  //parcours_xml_texte( n->fonction, trace_abs);
-  parcours_l_exp(n->args);
-  //parcours_balise_fermante(fct, trace_abs);
+
+  if(rechercheExecutable(n->fonction) != -1)
+  {
+    
+    if(tabsymboles.tab[rechercheExecutable(n->fonction)].complement == n->args->size)
+    {
+      parcours_l_exp(n->args);
+    }
+
+  }
+  //else erreur!
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_retour(n_instr *n)
 {
-  char *fct = "instr_retour";
-  //parcours_balise_ouvrante(fct, trace_abs);
+  
   parcours_exp(n->u.retour_.expression);
-  //parcours_balise_fermante(fct, trace_abs);
-
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_ecrire(n_instr *n)
 {
-  char *fct = "instr_ecrire";
-  //parcours_balise_ouvrante(fct, trace_abs);
+  
   parcours_exp(n->u.ecrire_.expression);
-  //parcours_balise_fermante(fct, trace_abs);
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_l_exp(n_l_exp *n)
 {
-  char *fct = "l_exp";
-  //parcours_balise_ouvrante(fct, trace_abs);
 
-  if(n){
+  if(n)
+  {
     parcours_exp(n->tete);
     parcours_l_exp(n->queue);
   }
-  //parcours_balise_fermante(fct, trace_abs);
+  
 }
 
 /*-------------------------------------------------------------------------*/
@@ -184,53 +199,34 @@ void parcours_exp(n_exp *n)
 
 void parcours_varExp(n_exp *n)
 {
-  char *fct = "varExp";
-  //parcours_balise_ouvrante(fct, trace_abs);
+  
   parcours_var(n->u.var);
-  //parcours_balise_fermante(fct, trace_abs);
+  
 }
 
 /*-------------------------------------------------------------------------*/
 void parcours_opExp(n_exp *n)
 {
-  char *fct = "opExp";
-  //parcours_balise_ouvrante(fct, trace_abs);
-/*
-  if(n->u.opExp_.op == plus) parcours_xml_texte("plus", trace_abs);
-  else if(n->u.opExp_.op == moins) parcours_xml_texte("moins", trace_abs);
-  else if(n->u.opExp_.op == fois) parcours_xml_texte("fois", trace_abs);
-  else if(n->u.opExp_.op == divise) parcours_xml_texte("divise", trace_abs);
-  else if(n->u.opExp_.op == egal) parcours_xml_texte("egal", trace_abs);
-  else if(n->u.opExp_.op == inferieur) parcours_xml_texte("inf", trace_abs);
-  else if(n->u.opExp_.op == ou) parcours_xml_texte("ou", trace_abs);
-  else if(n->u.opExp_.op == et) parcours_xml_texte("et", trace_abs);
-  else if(n->u.opExp_.op == non) parcours_xml_texte("non", trace_abs);
-  //else if(n->u.opExp_.op == prio) parcours_xml_texte("()", trace_abs);
-*/
+  
   if( n->u.opExp_.op1 != NULL ) {
     parcours_exp(n->u.opExp_.op1);
   }
   if( n->u.opExp_.op2 != NULL ) {
     parcours_exp(n->u.opExp_.op2);
   }
-  //parcours_balise_fermante(fct, trace_abs);
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
-void parcours_intExp(n_exp *n)
+void parcours_intExp(n_exp *n)    // A supprimer
 {
-  char texte[ 50 ]; // Max. 50 chiffres
 
-  //parcours_element( "intExp", texte, trace_abs );
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_lireExp(n_exp *n)
+void parcours_lireExp(n_exp *n)   // A supprimer
 {
-  char *fct = "lireExp";
-  //parcours_balise_ouvrante(fct, trace_abs);
-  //parcours_balise_fermante(fct, trace_abs);
 
 }
 
@@ -238,23 +234,19 @@ void parcours_lireExp(n_exp *n)
 
 void parcours_appelExp(n_exp *n)
 {
-  char *fct = "appelExp";
-  //parcours_balise_ouvrante(fct, trace_abs);
+  
   parcours_appel(n->u.appel);
-  //parcours_balise_fermante(fct, trace_abs);
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_l_dec(n_l_dec *n)
 {
-  char *fct = "l_dec";
-
-  if( n ){
-    //parcours_balise_ouvrante(fct, trace_abs);
+  if( n )
+  {
     parcours_dec(n->tete);
     parcours_l_dec(n->queue);
-    //parcours_balise_fermante(fct, trace_abs);
   }
 }
 
@@ -263,76 +255,122 @@ void parcours_l_dec(n_l_dec *n)
 void parcours_dec(n_dec *n)
 {
 
-  if(n){
-    if(n->type == foncDec) {
-      parcours_foncDec(n);
+  if(n)
+  {
+    if(rechercheDeclarative(n->nom)==-1)
+    {
+      if (n->type == foncDec)
+      {
+        parcours_foncDec(n);
+      }
+      else if (n->type == varDec)
+      {
+        parcours_varDec(n);
+      }
+      else if (n->type == tabDec)
+      {
+        parcours_tabDec(n);
+      }
     }
-    else if(n->type == varDec) {
-      parcours_varDec(n);
-    }
-    else if(n->type == tabDec) {
-      parcours_tabDec(n);
-    }
+    //else error!
   }
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_foncDec(n_dec *n)
-{
-  char *fct = "foncDec";
-  //parcours_balise_ouvrante(fct, trace_abs);
-  //  parcours_xml_texte( n->nom, trace_abs );
+{  
+  entreeFonction();
+  ajouteIdentificateur(n->nom, portee, T_FONCTION, adresseLocaleCourante, n->u.foncDec_.param->size);
+
   parcours_l_dec(n->u.foncDec_.param);
+
+  entreeBlocFonction();
   parcours_l_dec(n->u.foncDec_.variables);
+
   parcours_instr(n->u.foncDec_.corps);
-  //parcours_balise_fermante(fct, trace_abs);
+
+  sortieFonction(trace_tabsymb);
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_varDec(n_dec *n)
 {
-  if(rechercheDeclarative(n->nom)!=-1)
-    ajouteIdentificateur( n->nom,  int portee, int type, int adresse, int complement);
+  
+  if(portee == P_ARGUMENT)
+  {
+    ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseArgumentCourant, 0);
+    adresseArgumentCourant += 4;
+  }
+    
+  else if(portee == P_VARIABLE_LOCALE)
+  {
+    ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseLocaleCourante, 0);
+    adresseLocaleCourante += 4;
+  } 
 
-  //parcours_element("varDec", n->nom, trace_abs);
-
+  else if(portee == P_VARIABLE_GLOBALE) 
+  {
+    ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseGlobaleCourante, 0);
+    adresseGlobaleCourante += 4;
+  }
+  //else erreur!
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_tabDec(n_dec *n)
 {
-  char texte[100]; // Max. 100 chars nom tab + taille
-  //parcours_element( "tabDec", texte, trace_abs );
+  
+  if(portee == P_VARIABLE_GLOBALE)
+  {
+    ajouteIdentificateur(n->nom, portee, T_TABLEAU_ENTIER, adresseGlobaleCourante, n->u.tabDec_.taille);
+    adresseGlobaleCourante += (4 * n->u.tabDec_.taille);
+  } 
+  //else erreur!
+  
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_var(n_var *n)
 {
-  if(n->type == simple) {
-    parcours_var_simple(n);
+  if(rechercheExecutable(n->nom) != -1)
+  {
+    if(n->type == simple) 
+    {
+      if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_ENTIER)
+        parcours_var_simple(n);   // A Supprimer
+      else
+      {
+        //erreur! 
+      }
+      
+    }
+    else if(n->type == indicee) 
+    {
+      if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_TABLEAU_ENTIER)
+        parcours_var_indicee(n);   // A Supprimer?
+      else
+      {
+        //erreur!
+      }
+    }
   }
-  else if(n->type == indicee) {
-    parcours_var_indicee(n);
-  }
+  //else erreur
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_var_simple(n_var *n)
+void parcours_var_simple(n_var *n) // A Supprimer
 {
-  //parcours_element("var_simple", n->nom, trace_abs);
+  
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_var_indicee(n_var *n)
+void parcours_var_indicee(n_var *n)   // A Supprimer?
 {
-  char *fct = "var_indicee";
-  //parcours_balise_ouvrante(fct, trace_abs);
-  //parcours_element("var_base_tableau", n->nom, trace_abs);
   parcours_exp( n->u.indicee_.indice );
-  //parcours_balise_fermante(fct, trace_abs);
 }
 /*-------------------------------------------------------------------------*/

@@ -5,15 +5,26 @@
 #include "util.h"
 
 /* Table des symboles (globale ET locale) */
-tabsymboles_ tabsymboles;
+//tabsymboles_ tabsymboles;
 
 /*-------------------------------------------------------------------------*/
 
 /** 
+  * 
+  */
+void entreeProgramme(void)
+{
+  tabsymboles.base = 0;
+  tabsymboles.sommet = 0;
+  portee = P_VARIABLE_GLOBALE;
+}
+
+/*-------------------------------------------------------------------------*/
+/** 
   * Fonction qui bascule table globale -> table locale. À appeler lors qu'on
   * parcourt une déclaration de fonction, juste avant la liste d'arguments.
   * ATTENTION : après avoir traité les arguments, votre programme doit modifier
-  * __excplicitement___ la valeu de `portee` pour stocker les var. locales avec
+  * __excplicitement___ la valeur de `portee` pour stocker les var. locales avec
   * la portée P_VARIABLE_LOCALE
   */
 void entreeFonction(void){
@@ -21,6 +32,18 @@ void entreeFonction(void){
   portee = P_ARGUMENT;
   adresseLocaleCourante = 0;
   adresseArgumentCourant = 0;
+}
+
+/*-------------------------------------------------------------------------*/
+/** 
+  * Fonction qui bascule la portee de la valeur P_ARGUMENT à la valeur P_VARIABLE_LOCALE
+  * afin de pouvoir stocker les var. locales avec la portée P_VARIABLE_LOCALE.
+  * À appeler lors qu'on parcourt une déclaration de fonction, juste après avoir 
+  * traité tous les arguments.
+  */
+void entreeBlocFonction(void)
+{
+  portee = P_VARIABLE_LOCALE;
 }
 
 /*-------------------------------------------------------------------------*/

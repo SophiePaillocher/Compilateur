@@ -32,17 +32,20 @@ typedef struct {
   int sommet; // pointe toujours vers la prochaine ligne disponible du tableau
 } tabsymboles_;
 
+void entreeProgramme(void);
 void entreeFonction(void);
 void sortieFonction(int trace_tabsymb);
+void entreeBlocFonction(void);
 int ajouteIdentificateur(char *identif,  int portee, int type, int adresse, int complement);
 int rechercheExecutable(char *identif);
 int rechercheDeclarative(char *identif);
 void afficheTabsymboles(void);
 
 // Déclaré dans tabsymboles.c
-extern tabsymboles_ tabsymboles;
+/*extern*/ tabsymboles_ tabsymboles;
 // À déclarer en `extern` dans votre module de génération de code
 int portee;
+int adresseGlobaleCourante;
 int adresseLocaleCourante;
 int adresseArgumentCourant;
 // adresseGlobaleCourante n'est pas utilisée dans tabsymboles.c
