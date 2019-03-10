@@ -12,7 +12,7 @@ extern int adresseLocaleCourante;
 extern int adresseArgumentCourant;
 
 
-int trace_tabsymb = 1; // à Editer
+extern int trace_tabsymb;                  // à Editer
 
 void parcours_n_prog(n_prog *n);
 void parcours_l_instr(n_l_instr *n);
@@ -219,13 +219,13 @@ void parcours_opExp(n_exp *n)
 
 /*-------------------------------------------------------------------------*/
 
-void parcours_intExp(n_exp *n)    // A supprimer
+void parcours_intExp(n_exp *n)    // A supprimer?
 {
 
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_lireExp(n_exp *n)   // A supprimer
+void parcours_lireExp(n_exp *n)   // A supprimer?
 {
 
 }
@@ -342,7 +342,7 @@ void parcours_var(n_var *n)
     if(n->type == simple) 
     {
       if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_ENTIER)
-        parcours_var_simple(n);   // A Supprimer
+        parcours_var_simple(n);   // A Supprimer?
       else
       {
         //erreur! 
@@ -363,7 +363,7 @@ void parcours_var(n_var *n)
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_var_simple(n_var *n) // A Supprimer
+void parcours_var_simple(n_var *n) // A Supprimer?
 {
   
 }

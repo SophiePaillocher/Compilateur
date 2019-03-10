@@ -3,6 +3,7 @@
 #include <string.h>
 #include "syntabs.h"
 #include "affiche_arbre_abstrait.h"
+#include "parcours_arbre_abstrait.h"
 #include "analyseur_syntaxique.tab.h"
 #include "analyseur_lexical_flex.h"
 
@@ -86,26 +87,32 @@ int main(int argc, char **argv) {
     }
   }
 
-  if( !( affiche_lex || affiche_syntaxe_abstraite || affiche_code3a ||
-      affiche_tabsymb || affiche_mips ) ) {
+  if( !( affiche_lex || affiche_syntaxe_abstraite || affiche_code3a || affiche_tabsymb || affiche_mips ) ) 
+  {
     affiche_nasm = 1; /* Par défaut, affiche code cible NASM */
   }
 
-  if(affiche_lex == 1) {
+  if(affiche_lex == 1) 
+  {
     test_yylex( yyin );
   }
-  if( affiche_syntaxe_abstraite ) {
+  if( affiche_syntaxe_abstraite ) 
+  {
 	yyparse();
 	affiche_n_prog(n);
 	//printf("\nCompilation complete!\n");
   }
-  if(affiche_code3a){
+  if(affiche_code3a)
+  {
   	//Affiche code 3a
   }
-  if(affiche_tabsymb){
-    //Affiche table de symboles
+  if(affiche_tabsymb)
+  {
+    yyparse();
+    parcours_n_prog(n);
   }
-  if(affiche_nasm){
+  if(affiche_nasm)
+  {
     //Affiche code cible NASM
   }
   return 0;
