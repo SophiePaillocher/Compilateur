@@ -3,7 +3,7 @@
 
 #include "syntabs.h"
 
-int trace_tabsymb = 1;  
+//int trace_tabsymb = 1;  
 
 void parcours_n_prog(n_prog *n);
 

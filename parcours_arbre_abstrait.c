@@ -2,6 +2,7 @@
 #include "syntabs.h"
 #include "util.h"
 #include "tabsymboles.h"
+#include "parcours_arbre_abstrait.h"
 //#include "tabsymboles.c"
 
 extern tabsymboles_ tabsymboles;
@@ -12,7 +13,7 @@ extern int adresseLocaleCourante;
 extern int adresseArgumentCourant;
 
 
-extern int trace_tabsymb;                  // à Editer
+int trace_tabsymb = 1;                  // à Editer
 
 void parcours_n_prog(n_prog *n);
 void parcours_l_instr(n_l_instr *n);
@@ -40,7 +41,6 @@ void parcours_var_simple(n_var *n);
 void parcours_var_indicee(n_var *n);
 void parcours_appel(n_appel *n);
 
-int trace_abs = 1;
 
 /*-------------------------------------------------------------------------*/
 
@@ -281,8 +281,22 @@ void parcours_dec(n_dec *n)
 void parcours_foncDec(n_dec *n)
 {  
   entreeFonction();
-  ajouteIdentificateur(n->nom, portee, T_FONCTION, adresseLocaleCourante, n->u.foncDec_.param->size);
-
+  printf("Nom:  %s\n",n->nom);
+  printf("portee: %d\n", portee);
+  printf("type: %d\n",T_FONCTION);
+  printf("adresseLocaleCourante: %d\n", adresseLocaleCourante);
+ // printf("complement: %d\n", n->u.foncDec_.param->size);
+  
+  
+  if(n->u.foncDec_.param == NULL)
+  {
+    ajouteIdentificateur(n->nom, portee, T_FONCTION, adresseLocaleCourante, 0);
+  }
+  else
+  {
+    ajouteIdentificateur(n->nom, portee, T_FONCTION, adresseLocaleCourante, n->u.foncDec_.param->size);
+  }
+  
   parcours_l_dec(n->u.foncDec_.param);
 
   entreeBlocFonction();
