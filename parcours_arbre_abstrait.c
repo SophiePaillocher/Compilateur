@@ -3,7 +3,7 @@
 #include "util.h"
 #include "tabsymboles.h"
 #include "parcours_arbre_abstrait.h"
-//#include "tabsymboles.c"
+
 
 extern tabsymboles_ tabsymboles;
 
@@ -37,7 +37,6 @@ void parcours_foncDec(n_dec *n);
 void parcours_varDec(n_dec *n);
 void parcours_tabDec(n_dec *n);
 void parcours_var(n_var *n);
-void parcours_var_simple(n_var *n);
 void parcours_var_indicee(n_var *n);
 void parcours_appel(n_appel *n);
 
@@ -55,7 +54,7 @@ void parcours_n_prog(n_prog *n)
   {
     if(tabsymboles.tab[rechercheExecutable("main")].complement == 0)
     {
-
+        // Modifier Structure
     }
     //else erreur!
   } 
@@ -281,13 +280,7 @@ void parcours_dec(n_dec *n)
 void parcours_foncDec(n_dec *n)
 {  
   entreeFonction();
-  printf("Nom:  %s\n",n->nom);
-  printf("portee: %d\n", portee);
-  printf("type: %d\n",T_FONCTION);
-  printf("adresseLocaleCourante: %d\n", adresseLocaleCourante);
- // printf("complement: %d\n", n->u.foncDec_.param->size);
-  
-  
+
   if(n->u.foncDec_.param == NULL)
   {
     ajouteIdentificateur(n->nom, portee, T_FONCTION, adresseLocaleCourante, 0);
@@ -356,7 +349,9 @@ void parcours_var(n_var *n)
     if(n->type == simple) 
     {
       if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_ENTIER)
-        parcours_var_simple(n);   // A Supprimer?
+      {
+                          // Modifier Structure
+      }
       else
       {
         //erreur! 
@@ -366,7 +361,7 @@ void parcours_var(n_var *n)
     else if(n->type == indicee) 
     {
       if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_TABLEAU_ENTIER)
-        parcours_var_indicee(n);   // A Supprimer?
+        parcours_var_indicee(n);
       else
       {
         //erreur!
@@ -377,13 +372,7 @@ void parcours_var(n_var *n)
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_var_simple(n_var *n) // A Supprimer?
-{
-  
-}
-
-/*-------------------------------------------------------------------------*/
-void parcours_var_indicee(n_var *n)   // A Supprimer?
+void parcours_var_indicee(n_var *n)
 {
   parcours_exp( n->u.indicee_.indice );
 }
