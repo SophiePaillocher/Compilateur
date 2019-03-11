@@ -28,8 +28,6 @@ void parcours_l_exp(n_l_exp *n);
 void parcours_exp(n_exp *n);
 void parcours_varExp(n_exp *n);
 void parcours_opExp(n_exp *n);
-void parcours_intExp(n_exp *n);
-void parcours_lireExp(n_exp *n);
 void parcours_appelExp(n_exp *n);
 void parcours_l_dec(n_l_dec *n);
 void parcours_dec(n_dec *n);
@@ -49,17 +47,17 @@ void parcours_n_prog(n_prog *n)
 
   parcours_l_dec(n->variables);
   parcours_l_dec(n->fonctions);
-
-  if(rechercheExecutable("main") != -1)
+  char * m = "main";
+  if(rechercheExecutable(m) != -1)
   {
-    if(tabsymboles.tab[rechercheExecutable("main")].complement == 0)
+
+    if(!(tabsymboles.tab[rechercheExecutable("main")].complement == 0))
     {
-        // Modifier Structure
+        erreur("Main ne peut pas prendre d'argument");
     }
-    //else erreur!
-  } 
-  //else erreur!
-  
+
+  }
+  else {erreur("Main introuvable");}
 }
 
 /*-------------------------------------------------------------------------*/
@@ -67,13 +65,13 @@ void parcours_n_prog(n_prog *n)
 
 void parcours_l_instr(n_l_instr *n)
 {
-  
+
   if(n)
   {
-  
+
   parcours_instr(n->tete);
   parcours_l_instr(n->queue);
-  
+
   }
 }
 
@@ -99,10 +97,11 @@ void parcours_instr_si(n_instr *n)
 
   parcours_exp(n->u.si_.test);
   parcours_instr(n->u.si_.alors);
-  if(n->u.si_.sinon){
+  if(n->u.si_.sinon)
+  {
     parcours_instr(n->u.si_.sinon);
   }
-  
+
 }
 
 /*-------------------------------------------------------------------------*/
@@ -112,7 +111,7 @@ void parcours_instr_tantque(n_instr *n)
 
   parcours_exp(n->u.tantque_.test);
   parcours_instr(n->u.tantque_.faire);
-  
+
 }
 
 /*-------------------------------------------------------------------------*/
@@ -122,7 +121,7 @@ void parcours_instr_affect(n_instr *n)
 
   parcours_var(n->u.affecte_.var);
   parcours_exp(n->u.affecte_.exp);
-  
+
 }
 
 /*-------------------------------------------------------------------------*/
@@ -131,7 +130,7 @@ void parcours_instr_appel(n_instr *n)
 {
 
   parcours_appel(n->u.appel);
-  
+
 }
 /*-------------------------------------------------------------------------*/
 
@@ -140,33 +139,34 @@ void parcours_appel(n_appel *n)
 
   if(rechercheExecutable(n->fonction) != -1)
   {
-    
+    //printf("complement: %d",tabsymboles.tab[rechercheExecutable(n->fonction)].complement);
+    //printf("argsSize: %d",n->args->size);
     if(tabsymboles.tab[rechercheExecutable(n->fonction)].complement == n->args->size)
     {
       parcours_l_exp(n->args);
     }
 
   }
-  //else erreur!
-  
+ else { erreur("Fonction non déclarée");}
+
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_retour(n_instr *n)
 {
-  
+
   parcours_exp(n->u.retour_.expression);
-  
+
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_ecrire(n_instr *n)
 {
-  
+
   parcours_exp(n->u.ecrire_.expression);
-  
+
 }
 
 /*-------------------------------------------------------------------------*/
@@ -179,53 +179,37 @@ void parcours_l_exp(n_l_exp *n)
     parcours_exp(n->tete);
     parcours_l_exp(n->queue);
   }
-  
+
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_exp(n_exp *n)
 {
-
   if(n->type == varExp) parcours_varExp(n);
   else if(n->type == opExp) parcours_opExp(n);
-  else if(n->type == intExp) parcours_intExp(n);
   else if(n->type == appelExp) parcours_appelExp(n);
-  else if(n->type == lireExp) parcours_lireExp(n);
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_varExp(n_exp *n)
 {
-  
+
   parcours_var(n->u.var);
-  
+
 }
 
 /*-------------------------------------------------------------------------*/
 void parcours_opExp(n_exp *n)
 {
-  
+
   if( n->u.opExp_.op1 != NULL ) {
     parcours_exp(n->u.opExp_.op1);
   }
   if( n->u.opExp_.op2 != NULL ) {
     parcours_exp(n->u.opExp_.op2);
   }
-  
-}
-
-/*-------------------------------------------------------------------------*/
-
-void parcours_intExp(n_exp *n)    // A supprimer?
-{
-
-}
-
-/*-------------------------------------------------------------------------*/
-void parcours_lireExp(n_exp *n)   // A supprimer?
-{
 
 }
 
@@ -233,16 +217,16 @@ void parcours_lireExp(n_exp *n)   // A supprimer?
 
 void parcours_appelExp(n_exp *n)
 {
-  
+
   parcours_appel(n->u.appel);
-  
+
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_l_dec(n_l_dec *n)
 {
-  if( n )
+  if(n)
   {
     parcours_dec(n->tete);
     parcours_l_dec(n->queue);
@@ -271,15 +255,27 @@ void parcours_dec(n_dec *n)
         parcours_tabDec(n);
       }
     }
-    //else error!
+    else {
+      if (n->type == foncDec)
+      {
+        erreur("Fonction déjà déclarée");
+      }
+      else if (n->type == varDec)
+      {
+        erreur("Variable déjà déclarée");
+      }
+      else if (n->type == tabDec)
+      {
+        erreur("Tableau déjà déclaré");
+      }
+    }
   }
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_foncDec(n_dec *n)
-{  
-  entreeFonction();
+{
 
   if(n->u.foncDec_.param == NULL)
   {
@@ -289,7 +285,8 @@ void parcours_foncDec(n_dec *n)
   {
     ajouteIdentificateur(n->nom, portee, T_FONCTION, adresseLocaleCourante, n->u.foncDec_.param->size);
   }
-  
+
+  entreeFonction();
   parcours_l_dec(n->u.foncDec_.param);
 
   entreeBlocFonction();
@@ -304,40 +301,38 @@ void parcours_foncDec(n_dec *n)
 
 void parcours_varDec(n_dec *n)
 {
-  
+
   if(portee == P_ARGUMENT)
   {
     ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseArgumentCourant, 0);
     adresseArgumentCourant += 4;
   }
-    
+
   else if(portee == P_VARIABLE_LOCALE)
   {
     ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseLocaleCourante, 0);
     adresseLocaleCourante += 4;
-  } 
+  }
 
-  else if(portee == P_VARIABLE_GLOBALE) 
+  else if(portee == P_VARIABLE_GLOBALE)
   {
     ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseGlobaleCourante, 0);
     adresseGlobaleCourante += 4;
   }
-  //else erreur!
-  
+
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_tabDec(n_dec *n)
 {
-  
+
   if(portee == P_VARIABLE_GLOBALE)
   {
     ajouteIdentificateur(n->nom, portee, T_TABLEAU_ENTIER, adresseGlobaleCourante, n->u.tabDec_.taille);
     adresseGlobaleCourante += (4 * n->u.tabDec_.taille);
-  } 
-  //else erreur!
-  
+  }
+  else erreur("Un tableau ne peut être déclaré que comme variable globale");
 }
 
 /*-------------------------------------------------------------------------*/
@@ -346,29 +341,25 @@ void parcours_var(n_var *n)
 {
   if(rechercheExecutable(n->nom) != -1)
   {
-    if(n->type == simple) 
+    if(n->type == simple)
     {
-      if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_ENTIER)
+      if(!(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_ENTIER))
       {
-                          // Modifier Structure
+              erreur("Usage incorrect de la variable");
       }
-      else
-      {
-        //erreur! 
-      }
-      
+
     }
-    else if(n->type == indicee) 
+    else if(n->type == indicee)
     {
       if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_TABLEAU_ENTIER)
         parcours_var_indicee(n);
       else
       {
-        //erreur!
+        erreur("Usage incorrect du tableau");
       }
     }
   }
-  //else erreur
+  else erreur("Variable ou tableau non déclaré.e");
 }
 
 /*-------------------------------------------------------------------------*/
