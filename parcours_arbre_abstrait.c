@@ -47,8 +47,8 @@ void parcours_n_prog(n_prog *n)
 
   parcours_l_dec(n->variables);
   parcours_l_dec(n->fonctions);
-  char * m = "main";
-  if(rechercheExecutable(m) != -1)
+  
+  if(rechercheExecutable("main") != -1)
   {
 
     if(!(tabsymboles.tab[rechercheExecutable("main")].complement == 0))
@@ -60,7 +60,6 @@ void parcours_n_prog(n_prog *n)
   else {erreur("Main introuvable");}
 }
 
-/*-------------------------------------------------------------------------*/
 /*-------------------------------------------------------------------------*/
 
 void parcours_l_instr(n_l_instr *n)
@@ -141,13 +140,17 @@ void parcours_appel(n_appel *n)
   {
     //printf("complement: %d",tabsymboles.tab[rechercheExecutable(n->fonction)].complement);
     //printf("argsSize: %d",n->args->size);
-    if(tabsymboles.tab[rechercheExecutable(n->fonction)].complement == n->args->size)
+    if(( n->args == NULL ) && ( tabsymboles.tab[rechercheExecutable(n->fonction)].complement == 0 ))
     {
       parcours_l_exp(n->args);
     }
-
+    else if(tabsymboles.tab[rechercheExecutable(n->fonction)].complement == n->args->size)
+    {
+      parcours_l_exp(n->args);
+    }
+    else {erreur("Fonction appelée avec un nombre incorrect d'argument");}
   }
- else { erreur("Fonction non déclarée");}
+ else {erreur("Fonction non déclarée");}
 
 }
 
