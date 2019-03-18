@@ -5,7 +5,7 @@ CC = gcc
 LIBS = -lm
 CCFLAGS = -Wall -ggdb
 
-OBJ = analyseur_lexical_flex.o analyseur_syntaxique.tab.o util.o syntabs.o affiche_arbre_abstrait.o tabsymboles.o parcours_arbre_abstrait.o
+OBJ = analyseur_lexical_flex.o analyseur_syntaxique.tab.o util.o syntabs.o affiche_arbre_abstrait.o tabsymboles.o parcours_arbre_abstrait.o code3a.o
 
 all: compilo
 

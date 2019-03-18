@@ -3,6 +3,7 @@
 #include "util.h"
 #include "tabsymboles.h"
 #include "parcours_arbre_abstrait.h"
+#include "code3a.h"
 
 
 extern tabsymboles_ tabsymboles;
@@ -13,7 +14,7 @@ extern int adresseLocaleCourante;
 extern int adresseArgumentCourant;
 
 
-int trace_tabsymb = 1;                  // à Editer
+int trace_tabsymb = 1;
 
 void parcours_n_prog(n_prog *n);
 void parcours_l_instr(n_l_instr *n);
@@ -44,10 +45,10 @@ void parcours_appel(n_appel *n);
 void parcours_n_prog(n_prog *n)
 {
   entreeProgramme();
-
+  code3a_init();
   parcours_l_dec(n->variables);
   parcours_l_dec(n->fonctions);
-  
+
   if(rechercheExecutable("main") != -1)
   {
 
@@ -279,7 +280,8 @@ void parcours_dec(n_dec *n)
 
 void parcours_foncDec(n_dec *n)
 {
-
+  code3a_ajoute_etiquette(n->nom);
+  code3a_ajoute_instruction(func_begin, NULL, NULL,NULL,"début de fonction");
   if(n->u.foncDec_.param == NULL)
   {
     ajouteIdentificateur(n->nom, portee, T_FONCTION, adresseLocaleCourante, 0);
@@ -313,6 +315,7 @@ void parcours_varDec(n_dec *n)
 
   else if(portee == P_VARIABLE_LOCALE)
   {
+    code3a_ajoute_instruction(alloc,code3a_new_constante(1),code3a_new_var(n->nom, portee,adresseLocaleCourante), NULL, "allocation declaration variable locale");
     ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseLocaleCourante, 0);
     adresseLocaleCourante += 4;
   }
