@@ -209,11 +209,9 @@ operande * parcours_exp(n_exp *n)
   else if(n->type == opExp) return parcours_opExp(n);
   else if(n->type == intExp) return parcours_intExp(n); 
   else if(n->type == appelExp) return parcours_appelExp(n); 
-  else 
-  { 
-    if(n->type == lireExp) return parcours_lireExp(n); 
-    else erreur("Type d'expression non valide");
-  }
+  else if(n->type == lireExp) return parcours_lireExp(n); 
+  erreur("Type d'expression non valide");
+
 }
 
 /*-------------------------------------------------------------------------*/
@@ -489,7 +487,7 @@ operande * parcours_var(n_var *n)
           erreur("Usage incorrect de la variable");
         }
       }
-      else erreur("Type de variable erroné");
+      erreur("Type de variable erroné");
     }
   }
   else erreur("Variable ou tableau non déclaré.e");
