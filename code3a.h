@@ -102,6 +102,11 @@ operande *code3a_new_constante(int valeur);
  */
 operande *code3a_new_etiquette(char *nom);
 /* 
+ * Génere un nouveau nom d'etiquette
+ * @return Un nouveau nom d'étiquette généré
+ */
+char * code3a_new_etiquette_name();
+/* 
  * Crée une opérande de type variable qui sert de "wrapper" à 
  * une variable donnée.
  * @param nom Le nom de la variable à envelopper dans cette opérande

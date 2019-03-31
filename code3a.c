@@ -13,6 +13,8 @@ code3a_ code3a;
 int code3asize = CODE_BLOCK_SIZE;
 // compteur des temporaires, pour générer des noms uniques
 int global_temp_counter = 0;
+// compteur d'étiquettes, pour générer des nom uniques
+int global_etiquette_counter = 0;
 // descripteur des temporaires, vecteur de pointeurs vers opérande temp.
 operande **desctemp; 
 // Comme pour code3asize, taille du descripteur desctemp, peut augmenter
@@ -119,6 +121,18 @@ operande *code3a_new_etiquette(char *nom){
   newetiq->u.oper_nom = malloc(sizeof(char)*102);
   strcpy(newetiq->u.oper_nom,nom);
   return newetiq;
+}
+
+/******************************************************************************/
+
+char * code3a_new_etiquette_name()
+{
+  char eti_name[12];
+  strcpy(eti_name, "e");
+  char eti_number[11];
+  sprintf(eti_number, "%d", global_etiquette_counter++);
+  strcat(eti_name, eti_number);
+  return eti_name;
 }
 
 /******************************************************************************/

@@ -13,7 +13,6 @@ extern int adresseGlobaleCourante;
 extern int adresseLocaleCourante;
 extern int adresseArgumentCourant;
 
-
 int trace_tabsymb = 1;
 
 void parcours_n_prog(n_prog *n);
@@ -26,9 +25,9 @@ void parcours_instr_appel(n_instr *n);
 void parcours_instr_retour(n_instr *n);
 void parcours_instr_ecrire(n_instr *n);
 void parcours_l_exp(n_l_exp *n);
-void parcours_exp(n_exp *n);
-void parcours_varExp(n_exp *n);
-void parcours_opExp(n_exp *n);
+operande * parcours_exp(n_exp *n);
+operande * parcours_varExp(n_exp *n);
+operande * parcours_opExp(n_exp *n);
 void parcours_appelExp(n_exp *n);
 void parcours_l_dec(n_l_dec *n);
 void parcours_dec(n_dec *n);
@@ -188,35 +187,113 @@ void parcours_l_exp(n_l_exp *n)
 
 /*-------------------------------------------------------------------------*/
 
-void parcours_exp(n_exp *n)
+operande * parcours_exp(n_exp *n)
 {
-  if(n->type == varExp) parcours_varExp(n);
-  else if(n->type == opExp) parcours_opExp(n);
-  else if(n->type == appelExp) parcours_appelExp(n);
+  if(n->type == varExp) return parcours_varExp(n);
+  else if(n->type == opExp) return parcours_opExp(n);
+  else if(n->type == intExp) return parcours_intExp(n); 
+  else if(n->type == appelExp) return parcours_appelExp(n); //à faire
+  else if(n->type == lireExp) return parcours_lireExp(n); //à faire
 }
 
 /*-------------------------------------------------------------------------*/
 
-void parcours_varExp(n_exp *n)
+operande * parcours_varExp(n_exp *n)
 {
 
-  parcours_var(n->u.var);
-
+  return parcours_var(n->u.var);
+  
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_opExp(n_exp *n)
+operande * parcours_opExp(n_exp *n)
 {
 
-  if( n->u.opExp_.op1 != NULL ) {
-    parcours_exp(n->u.opExp_.op1);
+  instrcode op_code;
+  operande * op_oper1 = NULL;
+  operande * op_oper2 = NULL;
+  operande * op_result;
+  char * comment = "";
+  
+  if( n->u.opExp_.op1 != NULL ) 
+  {  
+    op_oper1 = parcours_exp(n->u.opExp_.op1);
+    
+    if( n->u.opExp_.op2 != NULL ) 
+    {
+      op_oper2 = parcours_exp(n->u.opExp_.op2);
+      
+      switch(n->u.opExp_.op)
+      {
+        op_result = code3a_new_temporaire();
+        case plus : op_code = arith_add; 
+                    comment = "Addition"; 
+                    code3a_ajoute_instruction(op_code, op_oper1, op_oper2, op_result, comment);
+                    break;
+        case moins :  op_code = arith_sub; 
+                      comment = "Soustration"; 
+                      code3a_ajoute_instruction(op_code, op_oper1, op_oper2, op_result, comment);
+                      break;
+        case fois : op_code = arith_mult; 
+                    comment = "Multiplication"; 
+                    code3a_ajoute_instruction(op_code, op_oper1, op_oper2, op_result, comment);
+                    break;
+        case divise : op_code = arith_div; 
+                      comment = "Division"; 
+                      code3a_ajoute_instruction(op_code, op_oper1, op_oper2, op_result, comment);
+                      break;
+        case egal : char * etiquette_name = code3a_new_etiquette_name();
+                    code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Initialisation Egal");
+                    code3a_ajoute_instruction(jump_if_equal, op_oper1, op_oper2, code3a_new_etiquette(etiquette_name), "Test Egal");
+                    code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Correction Egal");
+                    code3a_ajoute_etiquette(etiquette_name);
+                    break;            
+        case inferieur :  char * etiquette_name = code3a_new_etiquette_name();
+                          code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Initialisation Inferieur");
+                          code3a_ajoute_instruction(jump_if_less, op_oper1, op_oper2, code3a_new_etiquette(etiquette_name), "Test Inferieur");
+                          code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Correction Inferieur");
+                          code3a_ajoute_etiquette(etiquette_name);
+        case ou : char * etiquette_name_1 = code3a_new_etiquette_name();
+                  char * etiquette_name_2 = code3a_new_etiquette_name();
+                  code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Initialisation Ou");
+                  code3a_ajoute_instruction(jump_if_equal, op_oper1, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_1), "Test premier operande Ou");
+                  code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Correction 1 Ou");
+                  code3a_ajoute_instruction(jump, NULL, NULL, code3a_new_etiquette(etiquette_name_2), "Fin Ou");
+                  code3a_ajoute_etiquette(etiquette_name_1);
+                  code3a_ajoute_instruction(jump_if_equal, op_oper2, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_2), "Test deuxième operande Ou");
+                  code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Correction 2 Ou");
+                  code3a_ajoute_etiquette(etiquette_name_2);
+                  break;
+        // case et : op_code =
+        default : ; //certainnement un ERREUR sinon
+      }
+      
+    }
+    
+    else
+    {
+      if(n->u.opExp_.op == non)
+      {
+        op_result = code3a_new_temporaire();
+        char * etiquette_name = code3a_new_etiquette_name();
+
+        code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Initialisation Negation");
+        code3a_ajoute_instruction(jump_if_equal, op_oper1, code3a_new_constante(0), code3a_new_etiquette(etiquette_name), "Test Negation");
+        code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Correction Negation");
+        code3a_ajoute_etiquette(etiquette_name);
+      }
+      //else Error
+    }
+    
   }
-  if( n->u.opExp_.op2 != NULL ) {
-    parcours_exp(n->u.opExp_.op2);
-  }
+  
+  return op_result;
 
 }
-
+operande * parcours_intExp(n_exp *n)
+{
+  return code3a_new_constante(n->u.entier);
+}
 /*-------------------------------------------------------------------------*/
 
 void parcours_appelExp(n_exp *n)
@@ -281,7 +358,8 @@ void parcours_dec(n_dec *n)
 void parcours_foncDec(n_dec *n)
 {
   code3a_ajoute_etiquette(n->nom);
-  code3a_ajoute_instruction(func_begin, NULL, NULL,NULL,"début de fonction");
+  code3a_ajoute_instruction(func_begin, NULL, NULL, NULL,"Début de fonction");
+
   if(n->u.foncDec_.param == NULL)
   {
     ajouteIdentificateur(n->nom, portee, T_FONCTION, adresseLocaleCourante, 0);
@@ -300,6 +378,8 @@ void parcours_foncDec(n_dec *n)
   parcours_instr(n->u.foncDec_.corps);
 
   sortieFonction(trace_tabsymb);
+
+  code3a_ajoute_instruction(func_end, NULL, NULL, NULL,"Fin de fonction");
 }
 
 /*-------------------------------------------------------------------------*/
@@ -315,7 +395,7 @@ void parcours_varDec(n_dec *n)
 
   else if(portee == P_VARIABLE_LOCALE)
   {
-    code3a_ajoute_instruction(alloc,code3a_new_constante(1),code3a_new_var(n->nom, portee,adresseLocaleCourante), NULL, "allocation declaration variable locale");
+    code3a_ajoute_instruction(alloc, code3a_new_constante(1), code3a_new_var(n->nom, portee, adresseLocaleCourante), NULL, "allocation declaration variable locale");
     ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseLocaleCourante, 0);
     adresseLocaleCourante += 4;
   }
@@ -351,17 +431,30 @@ void parcours_var(n_var *n)
     {
       if(!(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_ENTIER))
       {
-              erreur("Usage incorrect de la variable");
+              erreur("Usage incorrect du tableau");
       }
-
+      else
+      {
+        char * nom = n->nom;                                                    // Ajouter le v
+        int portee = tabsymboles.tab[rechercheExecutable(n->nom)].portee;
+        int adresse = tabsymboles.tab[rechercheExecutable(n->nom)].adresse;
+        return code3a_new_var(nom, portee, adresse);
+      }
+      
     }
     else if(n->type == indicee)
     {
       if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_TABLEAU_ENTIER)
+      {  
         parcours_var_indicee(n);
+        char * nom = n->nom;                                                    // Ajouter le v
+        int portee = tabsymboles.tab[rechercheExecutable(n->nom)].portee;
+        int adresse = tabsymboles.tab[rechercheExecutable(n->nom)].adresse;
+        return code3a_new_var(nom, portee, adresse);                            // A modifier pour les tableaux
+      }
       else
       {
-        erreur("Usage incorrect du tableau");
+        erreur("Usage incorrect de la variable");
       }
     }
   }
