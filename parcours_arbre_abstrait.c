@@ -224,10 +224,11 @@ operande * parcours_varExp(n_exp *n)
 /*-------------------------------------------------------------------------*/
 operande * parcours_opExp(n_exp *n)
 {
-  instrcode op_code;
   operande * op_oper1 = NULL;
   operande * op_oper2 = NULL;
   operande * op_result;
+  char * etiquette_name_1;
+  char * etiquette_name_2;
   char * comment = "";
   
   if( n->u.opExp_.op1 != NULL ) 
@@ -241,35 +242,32 @@ operande * parcours_opExp(n_exp *n)
       switch(n->u.opExp_.op)
       {
         op_result = code3a_new_temporaire();
-        case plus : op_code = arith_add; 
-                    comment = "Addition"; 
-                    code3a_ajoute_instruction(op_code, op_oper1, op_oper2, op_result, comment);
+        case plus : comment = "Addition"; 
+                    code3a_ajoute_instruction(arith_add, op_oper1, op_oper2, op_result, comment);
                     break;
-        case moins :  op_code = arith_sub; 
-                      comment = "Soustration"; 
-                      code3a_ajoute_instruction(op_code, op_oper1, op_oper2, op_result, comment);
+        case moins :  comment = "Soustration"; 
+                      code3a_ajoute_instruction(arith_sub, op_oper1, op_oper2, op_result, comment);
                       break;
-        case fois : op_code = arith_mult; 
-                    comment = "Multiplication"; 
-                    code3a_ajoute_instruction(op_code, op_oper1, op_oper2, op_result, comment);
+        case fois : comment = "Multiplication"; 
+                    code3a_ajoute_instruction(arith_mult, op_oper1, op_oper2, op_result, comment);
                     break;
-        case divise : op_code = arith_div; 
-                      comment = "Division"; 
-                      code3a_ajoute_instruction(op_code, op_oper1, op_oper2, op_result, comment);
+        case divise : comment = "Division"; 
+                      code3a_ajoute_instruction(arith_div, op_oper1, op_oper2, op_result, comment);
                       break;
-        case egal : char * etiquette_name = code3a_new_etiquette_name();
+        case egal : etiquette_name_1 = code3a_new_etiquette_name();
                     code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Initialisation Egal");
-                    code3a_ajoute_instruction(jump_if_equal, op_oper1, op_oper2, code3a_new_etiquette(etiquette_name), "Test Egal");
+                    code3a_ajoute_instruction(jump_if_equal, op_oper1, op_oper2, code3a_new_etiquette(etiquette_name_1), "Test Egal");
                     code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Correction Egal");
-                    code3a_ajoute_etiquette(etiquette_name);
+                    code3a_ajoute_etiquette(etiquette_name_1);
                     break;            
-        case inferieur :  char * etiquette_name = code3a_new_etiquette_name();
+        case inferieur :  etiquette_name_1 = code3a_new_etiquette_name();
                           code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Initialisation Inferieur");
-                          code3a_ajoute_instruction(jump_if_less, op_oper1, op_oper2, code3a_new_etiquette(etiquette_name), "Test Inferieur");
+                          code3a_ajoute_instruction(jump_if_less, op_oper1, op_oper2, code3a_new_etiquette(etiquette_name_1), "Test Inferieur");
                           code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Correction Inferieur");
-                          code3a_ajoute_etiquette(etiquette_name);
-        case ou : char * etiquette_name_1 = code3a_new_etiquette_name();
-                  char * etiquette_name_2 = code3a_new_etiquette_name();
+                          code3a_ajoute_etiquette(etiquette_name_1);
+                          break;
+        case ou : etiquette_name_1 = code3a_new_etiquette_name();
+                  etiquette_name_2 = code3a_new_etiquette_name();
                   code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Initialisation Ou");
                   code3a_ajoute_instruction(jump_if_equal, op_oper1, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_1), "Test operande 1 Ou");
                   code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Correction 1 Ou");
@@ -279,12 +277,12 @@ operande * parcours_opExp(n_exp *n)
                   code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Correction 2 Ou");
                   code3a_ajoute_etiquette(etiquette_name_2);
                   break;
-        case et : char * etiquette_name = code3a_new_etiquette_name();
+        case et : etiquette_name_1 = code3a_new_etiquette_name();
                   code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Initialisation Et");
-                  code3a_ajoute_instruction(jump_if_equal, op_oper1, code3a_new_constante(0), code3a_new_etiquette(etiquette_name), "Test operande 1 Et");
-                  code3a_ajoute_instruction(jump_if_equal, op_oper2, code3a_new_constante(0), code3a_new_etiquette(etiquette_name), "Test operande 1 Et");
+                  code3a_ajoute_instruction(jump_if_equal, op_oper1, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_1), "Test operande 1 Et");
+                  code3a_ajoute_instruction(jump_if_equal, op_oper2, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_1), "Test operande 1 Et");
                   code3a_ajoute_instruction(assign, code3a_new_constante(-1),NULL,  op_result,"Correction Et");
-                  code3a_ajoute_etiquette(etiquette_name);
+                  code3a_ajoute_etiquette(etiquette_name_1);
                   break;
         default : ; //certainnement un ERREUR sinon
       }

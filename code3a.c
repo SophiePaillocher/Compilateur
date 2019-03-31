@@ -128,10 +128,7 @@ operande *code3a_new_etiquette(char *nom){
 char * code3a_new_etiquette_name()
 {
   char eti_name[12];
-  strcpy(eti_name, "e");
-  char eti_number[11];
-  sprintf(eti_number, "%d", global_etiquette_counter++);
-  strcat(eti_name, eti_number);
+  sprintf(eti_name, "e%d", global_etiquette_counter++);
   return eti_name;
 }
 
