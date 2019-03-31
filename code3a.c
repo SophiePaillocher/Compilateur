@@ -204,7 +204,7 @@ void _code3a_affiche_operande(operande *oper, int affiche_last_use){
   else if(oper->oper_type == O_FONCTION){
     printf("%s",oper->u.oper_func.oper_nom);
   }
-
+  
   else{
     erreur("Type d'opérande invalide dans code 3 adresses");
   }    

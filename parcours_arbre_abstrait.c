@@ -208,9 +208,12 @@ operande * parcours_exp(n_exp *n)
   if(n->type == varExp) return parcours_varExp(n);
   else if(n->type == opExp) return parcours_opExp(n);
   else if(n->type == intExp) return parcours_intExp(n); 
-  else if(n->type == appelExp) return parcours_appelExp(n); //à faire
-  else if(n->type == lireExp) return parcours_lireExp(n); 
-  else erreur("Type d'expression non valide");
+  else if(n->type == appelExp) return parcours_appelExp(n); 
+  else 
+  { 
+    if(n->type == lireExp) return parcours_lireExp(n); 
+    else erreur("Type d'expression non valide");
+  }
 }
 
 /*-------------------------------------------------------------------------*/
@@ -472,19 +475,22 @@ operande * parcours_var(n_var *n)
       }
       
     }
-    else if(n->type == indicee)
+    else 
     {
-      if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_TABLEAU_ENTIER)
-      {  
-        operande * op_indice = parcours_var_indicee(n);
-        return code3a_new_var_indicee(n->nom, tabsymboles.tab[rechercheExecutable(n->nom)].portee, tabsymboles.tab[rechercheExecutable(n->nom)].adresse, op_indice);                            // A modifier pour les tableaux
-      }
-      else
+      if(n->type == indicee)
       {
-        erreur("Usage incorrect de la variable");
+        if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_TABLEAU_ENTIER)
+        {  
+          operande * op_indice = parcours_var_indicee(n);
+          return code3a_new_var_indicee(n->nom, tabsymboles.tab[rechercheExecutable(n->nom)].portee, tabsymboles.tab[rechercheExecutable(n->nom)].adresse, op_indice);                            // A modifier pour les tableaux
+        }
+        else
+        {
+          erreur("Usage incorrect de la variable");
+        }
       }
+      else erreur("Type de variable erroné");
     }
-    else erreur("Type de variable erroné");
   }
   else erreur("Variable ou tableau non déclaré.e");
 }
