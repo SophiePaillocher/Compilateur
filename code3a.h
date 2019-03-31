@@ -9,6 +9,7 @@
 #define O_ETIQUETTE 2
 #define O_TEMPORAIRE 3
 #define O_VARIABLE 4
+#define O_FONCTION 5
 
 typedef enum {arith_add, arith_sub, arith_mult, arith_div, //expressions arith.
               func_call, func_param, func_val_ret, func_begin, func_end, //fonctions
@@ -38,6 +39,9 @@ struct operande_ {
         int oper_adresse;        
         struct operande_ *oper_indice;
     } oper_var; // variable locale, globale ou argument de fonction
+    struct {
+        char *oper_nom;        
+    } oper_func; // fonction
   } u;
 } ;
 
@@ -107,6 +111,13 @@ operande *code3a_new_etiquette(char *nom);
  */
 char * code3a_new_etiquette_name();
 /* 
+ * Crée une opérande de type fonction qui sert de "wrapper" à 
+ * une fonction donnée.
+ * @param nom Le nom de la fonction à envelopper dans cette opérande
+ * @return Une opérande fonction à partir de la fonction donnée
+ */
+operande *code3a_new_func(char *nom);
+/* 
  * Crée une opérande de type variable qui sert de "wrapper" à 
  * une variable donnée.
  * @param nom Le nom de la variable à envelopper dans cette opérande
@@ -116,7 +127,20 @@ char * code3a_new_etiquette_name();
  *                symboles et copiée dans le code trois adresses
  * @return Une opérande variable à partir de la variable donnée
  */
-operande *code3a_new_var(char *nom, int portee, int adresse);                               
+operande *code3a_new_var(char *nom, int portee, int adresse);     
+/* 
+ * Crée une opérande de type variable qui sert de "wrapper" à 
+ * une variable indicée donnée.
+ * @param nom Le nom de la variable à envelopper dans cette opérande
+ * @param portee Une valeur parmi P_ARGUMENT, P_VARIABLE_LOCALE ou
+ *               P_VARIABLE_GLOBALE (définies dans tabsymboles.h)
+ * @param adresse Adresse de la variable, calculée dans la table des
+ *                symboles et copiée dans le code trois adresses
+ * @param indice  Operande contenant le temporaire qui correspond à 
+ *                l'indice visé
+ * @return Une opérande variable à partir de la variable donnée
+ */
+operande *code3a_new_var_indicee(char *nom, int portee, int adresse, operande *op_indice); 
 /*
  * Cette fonction affiche le code à trois adresses créé dans le tableau
  * code3a. Selon la valeur de code3a_verbose, affiche plus ou moins de 

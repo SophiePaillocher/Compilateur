@@ -137,6 +137,16 @@ char * code3a_new_etiquette_name()
 
 /******************************************************************************/
 
+operande *code3a_new_func(char *nom){    
+  operande *newfunc = malloc(sizeof(operande));
+  newfunc->oper_type = O_FONCTION;
+  newfunc->u.oper_func.oper_nom = malloc(sizeof(char)*102);
+  sprintf(newfunc->u.oper_var.oper_nom, "f%s",nom); // préfixer le nom d'un "f"  
+  return newfunc;
+}
+
+/******************************************************************************/
+
 operande *code3a_new_var(char *nom, int portee, int adresse){    
   operande *newvar = malloc(sizeof(operande));
   newvar->oper_type = O_VARIABLE;
@@ -145,6 +155,19 @@ operande *code3a_new_var(char *nom, int portee, int adresse){
   newvar->u.oper_var.oper_portee = portee;
   newvar->u.oper_var.oper_adresse = adresse;
   newvar->u.oper_var.oper_indice = NULL;  
+  return newvar;
+}
+
+/******************************************************************************/
+
+operande *code3a_new_var_indicee(char *nom, int portee, int adresse, operande *op_indice){    
+  operande *newvar = malloc(sizeof(operande));
+  newvar->oper_type = O_VARIABLE;
+  newvar->u.oper_var.oper_nom = malloc(sizeof(char)*102);
+  sprintf(newvar->u.oper_var.oper_nom, "v%s",nom); // préfixer le nom d'un "v"  
+  newvar->u.oper_var.oper_portee = portee;
+  newvar->u.oper_var.oper_adresse = adresse;
+  newvar->u.oper_var.oper_indice = op_indice;  
   return newvar;
 }
 
@@ -181,6 +204,10 @@ void _code3a_affiche_operande(operande *oper, int affiche_last_use){
       printf("{p=%c,a=%d}",oper_portee, oper->u.oper_var.oper_adresse);
     }    
   }
+  else if(oper->oper_type == O_FONCTION){
+    printf("%s",oper->u.oper_func.oper_nom);
+  }
+
   else{
     erreur("Type d'opérande invalide dans code 3 adresses");
   }    

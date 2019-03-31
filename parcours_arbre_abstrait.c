@@ -28,14 +28,16 @@ void parcours_l_exp(n_l_exp *n);
 operande * parcours_exp(n_exp *n);
 operande * parcours_varExp(n_exp *n);
 operande * parcours_opExp(n_exp *n);
-void parcours_appelExp(n_exp *n);
+operande * parcours_intExp(n_exp *n);
+operande * parcours_appelExp(n_exp *n);
+operande * parcours_lireExp(n_exp *n);
 void parcours_l_dec(n_l_dec *n);
 void parcours_dec(n_dec *n);
 void parcours_foncDec(n_dec *n);
 void parcours_varDec(n_dec *n);
 void parcours_tabDec(n_dec *n);
-void parcours_var(n_var *n);
-void parcours_var_indicee(n_var *n);
+operande * parcours_var(n_var *n);
+operande * parcours_var_indicee(n_var *n);
 void parcours_appel(n_appel *n);
 
 
@@ -64,13 +66,10 @@ void parcours_n_prog(n_prog *n)
 
 void parcours_l_instr(n_l_instr *n)
 {
-
   if(n)
   {
-
-  parcours_instr(n->tete);
-  parcours_l_instr(n->queue);
-
+    parcours_instr(n->tete);
+    parcours_l_instr(n->queue);
   }
 }
 
@@ -93,53 +92,73 @@ void parcours_instr(n_instr *n)
 
 void parcours_instr_si(n_instr *n)
 {
+  operande * op_test = parcours_exp(n->u.si_.test);
 
-  parcours_exp(n->u.si_.test);
+  char * etiquette_name_1 = code3a_new_etiquette_name();
+  code3a_ajoute_instruction(jump_if_equal, op_test, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_1), "Test Si");
+  
   parcours_instr(n->u.si_.alors);
+  
   if(n->u.si_.sinon)
   {
-    parcours_instr(n->u.si_.sinon);
-  }
+    char * etiquette_name_2 = code3a_new_etiquette_name();
+    code3a_ajoute_instruction(jump, NULL, NULL, code3a_new_etiquette(etiquette_name_2), "Saut du sinon Si");
+    code3a_ajoute_etiquette(etiquette_name_1);
 
+    parcours_instr(n->u.si_.sinon);
+    
+    code3a_ajoute_etiquette(etiquette_name_2);
+  }
+  else
+  {
+    code3a_ajoute_etiquette(etiquette_name_1);
+  }
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_tantque(n_instr *n)
 {
+  char * etiquette_name_debut = code3a_new_etiquette_name();
+  code3a_ajoute_etiquette(etiquette_name_debut);
 
-  parcours_exp(n->u.tantque_.test);
+  operande * op_test = parcours_exp(n->u.tantque_.test);
+
+  char * etiquette_name_fin = code3a_new_etiquette_name();
+  code3a_ajoute_instruction(jump_if_equal, op_test, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_fin), "Test condition Tantque");
+
   parcours_instr(n->u.tantque_.faire);
-
+  
+  code3a_ajoute_instruction(jump, NULL, NULL, code3a_new_etiquette(etiquette_name_debut), "Retour au test Tantque");
+  code3a_ajoute_etiquette(etiquette_name_fin);
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_affect(n_instr *n)
 {
+  operande * op_var = parcours_var(n->u.affecte_.var);
+  operande * op_exp = parcours_exp(n->u.affecte_.exp);
 
-  parcours_var(n->u.affecte_.var);
-  parcours_exp(n->u.affecte_.exp);
-
+  code3a_ajoute_instruction(assign, op_exp, NULL, op_var, "Affectation d'une variable");
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_appel(n_instr *n)
 {
-
   parcours_appel(n->u.appel);
-
+  if(rechercheExecutable(n->u.appel->fonction) != -1)
+  {
+    code3a_ajoute_instruction(func_call, code3a_new_func(n->u.appel->fonction), NULL, NULL, "Appel fonction (instruction)");
+  }
 }
 /*-------------------------------------------------------------------------*/
 
 void parcours_appel(n_appel *n)
 {
-
   if(rechercheExecutable(n->fonction) != -1)
   {
-    //printf("complement: %d",tabsymboles.tab[rechercheExecutable(n->fonction)].complement);
-    //printf("argsSize: %d",n->args->size);
     if(( n->args == NULL ) && ( tabsymboles.tab[rechercheExecutable(n->fonction)].complement == 0 ))
     {
       parcours_l_exp(n->args);
@@ -151,38 +170,35 @@ void parcours_appel(n_appel *n)
     else {erreur("Fonction appelée avec un nombre incorrect d'argument");}
   }
  else {erreur("Fonction non déclarée");}
-
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_retour(n_instr *n)
 {
-
-  parcours_exp(n->u.retour_.expression);
-
+  operande * op_ret = parcours_exp(n->u.retour_.expression);
+  
+  code3a_ajoute_instruction(func_val_ret, op_ret, NULL, NULL, "Retour");
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_ecrire(n_instr *n)
 {
-
-  parcours_exp(n->u.ecrire_.expression);
-
+  operande * message = parcours_exp(n->u.ecrire_.expression);
+  code3a_ajoute_instruction(sys_write, message, NULL, NULL, "Appel ecrire()");
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_l_exp(n_l_exp *n)
 {
-
   if(n)
   {
-    parcours_exp(n->tete);
+    operande * op_args = parcours_exp(n->tete);
+    code3a_ajoute_instruction(func_param, op_args, NULL, NULL, "Param");
     parcours_l_exp(n->queue);
   }
-
 }
 
 /*-------------------------------------------------------------------------*/
@@ -193,7 +209,7 @@ operande * parcours_exp(n_exp *n)
   else if(n->type == opExp) return parcours_opExp(n);
   else if(n->type == intExp) return parcours_intExp(n); 
   else if(n->type == appelExp) return parcours_appelExp(n); //à faire
-  else if(n->type == lireExp) return parcours_lireExp(n); //à faire
+  else if(n->type == lireExp) return parcours_lireExp(n); 
 }
 
 /*-------------------------------------------------------------------------*/
@@ -208,7 +224,6 @@ operande * parcours_varExp(n_exp *n)
 /*-------------------------------------------------------------------------*/
 operande * parcours_opExp(n_exp *n)
 {
-
   instrcode op_code;
   operande * op_oper1 = NULL;
   operande * op_oper2 = NULL;
@@ -256,15 +271,21 @@ operande * parcours_opExp(n_exp *n)
         case ou : char * etiquette_name_1 = code3a_new_etiquette_name();
                   char * etiquette_name_2 = code3a_new_etiquette_name();
                   code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Initialisation Ou");
-                  code3a_ajoute_instruction(jump_if_equal, op_oper1, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_1), "Test premier operande Ou");
+                  code3a_ajoute_instruction(jump_if_equal, op_oper1, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_1), "Test operande 1 Ou");
                   code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Correction 1 Ou");
                   code3a_ajoute_instruction(jump, NULL, NULL, code3a_new_etiquette(etiquette_name_2), "Fin Ou");
                   code3a_ajoute_etiquette(etiquette_name_1);
-                  code3a_ajoute_instruction(jump_if_equal, op_oper2, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_2), "Test deuxième operande Ou");
+                  code3a_ajoute_instruction(jump_if_equal, op_oper2, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_2), "Test operande 2 Ou");
                   code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Correction 2 Ou");
                   code3a_ajoute_etiquette(etiquette_name_2);
                   break;
-        // case et : op_code =
+        case et : char * etiquette_name = code3a_new_etiquette_name();
+                  code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Initialisation Et");
+                  code3a_ajoute_instruction(jump_if_equal, op_oper1, code3a_new_constante(0), code3a_new_etiquette(etiquette_name), "Test operande 1 Et");
+                  code3a_ajoute_instruction(jump_if_equal, op_oper2, code3a_new_constante(0), code3a_new_etiquette(etiquette_name), "Test operande 1 Et");
+                  code3a_ajoute_instruction(assign, code3a_new_constante(-1),NULL,  op_result,"Correction Et");
+                  code3a_ajoute_etiquette(etiquette_name);
+                  break;
         default : ; //certainnement un ERREUR sinon
       }
       
@@ -288,19 +309,30 @@ operande * parcours_opExp(n_exp *n)
   }
   
   return op_result;
-
 }
+
+/*-------------------------------------------------------------------------*/
+
 operande * parcours_intExp(n_exp *n)
 {
   return code3a_new_constante(n->u.entier);
 }
+
 /*-------------------------------------------------------------------------*/
 
-void parcours_appelExp(n_exp *n)
+operande * parcours_appelExp(n_exp *n)
 {
-
   parcours_appel(n->u.appel);
+  return code3a_new_func(n->u.appel->fonction);
+}
 
+/*-------------------------------------------------------------------------*/
+
+operande * parcours_lireExp(n_exp *n)
+{
+  operande * op_result = code3a_new_temporaire();
+  code3a_ajoute_instruction(sys_read, NULL, NULL, op_result, "Apel de lire()");
+  return op_result;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -423,7 +455,7 @@ void parcours_tabDec(n_dec *n)
 
 /*-------------------------------------------------------------------------*/
 
-void parcours_var(n_var *n)
+operande * parcours_var(n_var *n)
 {
   if(rechercheExecutable(n->nom) != -1)
   {
@@ -435,10 +467,7 @@ void parcours_var(n_var *n)
       }
       else
       {
-        char * nom = n->nom;                                                    // Ajouter le v
-        int portee = tabsymboles.tab[rechercheExecutable(n->nom)].portee;
-        int adresse = tabsymboles.tab[rechercheExecutable(n->nom)].adresse;
-        return code3a_new_var(nom, portee, adresse);
+        return code3a_new_var(n->nom, tabsymboles.tab[rechercheExecutable(n->nom)].portee, tabsymboles.tab[rechercheExecutable(n->nom)].adresse);
       }
       
     }
@@ -446,11 +475,8 @@ void parcours_var(n_var *n)
     {
       if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_TABLEAU_ENTIER)
       {  
-        parcours_var_indicee(n);
-        char * nom = n->nom;                                                    // Ajouter le v
-        int portee = tabsymboles.tab[rechercheExecutable(n->nom)].portee;
-        int adresse = tabsymboles.tab[rechercheExecutable(n->nom)].adresse;
-        return code3a_new_var(nom, portee, adresse);                            // A modifier pour les tableaux
+        operande * op_indice = parcours_var_indicee(n);
+        return code3a_new_var_indicee(n->nom, tabsymboles.tab[rechercheExecutable(n->nom)].portee, tabsymboles.tab[rechercheExecutable(n->nom)].adresse, op_indice);                            // A modifier pour les tableaux
       }
       else
       {
@@ -462,8 +488,8 @@ void parcours_var(n_var *n)
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_var_indicee(n_var *n)
+operande * parcours_var_indicee(n_var *n)
 {
-  parcours_exp( n->u.indicee_.indice );
+  return parcours_exp(n->u.indicee_.indice);
 }
 /*-------------------------------------------------------------------------*/
