@@ -210,6 +210,7 @@ operande * parcours_exp(n_exp *n)
   else if(n->type == intExp) return parcours_intExp(n); 
   else if(n->type == appelExp) return parcours_appelExp(n); //à faire
   else if(n->type == lireExp) return parcours_lireExp(n); 
+  else erreur("Type d'expression non valide");
 }
 
 /*-------------------------------------------------------------------------*/
@@ -239,9 +240,10 @@ operande * parcours_opExp(n_exp *n)
     {
       op_oper2 = parcours_exp(n->u.opExp_.op2);
       
+      op_result = code3a_new_temporaire();
+
       switch(n->u.opExp_.op)
       {
-        op_result = code3a_new_temporaire();
         case plus : comment = "Addition"; 
                     code3a_ajoute_instruction(arith_add, op_oper1, op_oper2, op_result, comment);
                     break;
@@ -301,11 +303,12 @@ operande * parcours_opExp(n_exp *n)
         code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Correction Negation");
         code3a_ajoute_etiquette(etiquette_name);
       }
-      //else Error
+      else erreur("Le type d'expression ne match pas le nombre d'opérande");
     }
     
   }
-  
+  else erreur("Nombre d'operandes invalide");
+
   return op_result;
 }
 
@@ -481,6 +484,7 @@ operande * parcours_var(n_var *n)
         erreur("Usage incorrect de la variable");
       }
     }
+    else erreur("Type de variable erroné");
   }
   else erreur("Variable ou tableau non déclaré.e");
 }

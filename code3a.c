@@ -127,7 +127,7 @@ operande *code3a_new_etiquette(char *nom){
 
 char * code3a_new_etiquette_name()
 {
-  char eti_name[12];
+  char * eti_name = malloc(sizeof(char)*12);;
   sprintf(eti_name, "e%d", global_etiquette_counter++);
   return eti_name;
 }
