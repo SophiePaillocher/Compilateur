@@ -102,7 +102,7 @@ void parcours_instr_si(n_instr *n)
   if(n->u.si_.sinon)
   {
     char * etiquette_name_2 = code3a_new_etiquette_name();
-    code3a_ajoute_instruction(jump, NULL, NULL, code3a_new_etiquette(etiquette_name_2), "Saut du sinon Si");
+    code3a_ajoute_instruction(jump, code3a_new_etiquette(etiquette_name_2), NULL, NULL, "Saut du sinon Si");
     code3a_ajoute_etiquette(etiquette_name_1);
 
     parcours_instr(n->u.si_.sinon);
@@ -129,7 +129,7 @@ void parcours_instr_tantque(n_instr *n)
 
   parcours_instr(n->u.tantque_.faire);
   
-  code3a_ajoute_instruction(jump, NULL, NULL, code3a_new_etiquette(etiquette_name_debut), "Retour au test Tantque");
+  code3a_ajoute_instruction(jump, code3a_new_etiquette(etiquette_name_debut), NULL, NULL, "Retour au test Tantque");
   code3a_ajoute_etiquette(etiquette_name_fin);
 }
 
@@ -148,10 +148,6 @@ void parcours_instr_affect(n_instr *n)
 void parcours_instr_appel(n_instr *n)
 {
   parcours_appel(n->u.appel);
-  if(rechercheExecutable(n->u.appel->fonction) != -1)
-  {
-    code3a_ajoute_instruction(func_call, code3a_new_func(n->u.appel->fonction), NULL, NULL, "Appel fonction (instruction)");
-  }
 }
 /*-------------------------------------------------------------------------*/
 
@@ -159,6 +155,7 @@ void parcours_appel(n_appel *n)
 {
   if(rechercheExecutable(n->fonction) != -1)
   {
+    code3a_ajoute_instruction(alloc, code3a_new_constante(1), NULL, NULL, "Allocation valeur de retour");
     if(( n->args == NULL ) && ( tabsymboles.tab[rechercheExecutable(n->fonction)].complement == 0 ))
     {
       parcours_l_exp(n->args);
@@ -168,6 +165,7 @@ void parcours_appel(n_appel *n)
       parcours_l_exp(n->args);
     }
     else {erreur("Fonction appelée avec un nombre incorrect d'argument");}
+
   }
  else {erreur("Fonction non déclarée");}
 }
@@ -179,6 +177,7 @@ void parcours_instr_retour(n_instr *n)
   operande * op_ret = parcours_exp(n->u.retour_.expression);
   
   code3a_ajoute_instruction(func_val_ret, op_ret, NULL, NULL, "Retour");
+  code3a_ajoute_instruction(func_end, NULL, NULL, NULL, "fend");
 }
 
 /*-------------------------------------------------------------------------*/
@@ -274,7 +273,7 @@ operande * parcours_opExp(n_exp *n)
                   code3a_ajoute_instruction(assign, code3a_new_constante(0), NULL, op_result, "Initialisation Ou");
                   code3a_ajoute_instruction(jump_if_equal, op_oper1, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_1), "Test operande 1 Ou");
                   code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Correction 1 Ou");
-                  code3a_ajoute_instruction(jump, NULL, NULL, code3a_new_etiquette(etiquette_name_2), "Fin Ou");
+                  code3a_ajoute_instruction(jump, code3a_new_etiquette(etiquette_name_2), NULL, NULL, "Fin Ou");
                   code3a_ajoute_etiquette(etiquette_name_1);
                   code3a_ajoute_instruction(jump_if_equal, op_oper2, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_2), "Test operande 2 Ou");
                   code3a_ajoute_instruction(assign, code3a_new_constante(-1), NULL, op_result, "Correction 2 Ou");
@@ -391,7 +390,10 @@ void parcours_dec(n_dec *n)
 
 void parcours_foncDec(n_dec *n)
 {
-  code3a_ajoute_etiquette(n->nom);
+  char * nom_func = malloc(sizeof(char)*100);
+  sprintf(nom_func, "f%s", n->nom);
+  code3a_ajoute_etiquette(nom_func); 
+
   code3a_ajoute_instruction(func_begin, NULL, NULL, NULL,"Début de fonction");
 
   if(n->u.foncDec_.param == NULL)
@@ -436,6 +438,7 @@ void parcours_varDec(n_dec *n)
 
   else if(portee == P_VARIABLE_GLOBALE)
   {
+    code3a_ajoute_instruction(alloc, code3a_new_constante(1), code3a_new_var(n->nom, portee, adresseLocaleCourante), NULL, "allocation declaration variable globale");
     ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseGlobaleCourante, 0);
     adresseGlobaleCourante += 4;
   }
