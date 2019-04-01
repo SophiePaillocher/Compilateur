@@ -7,12 +7,14 @@
 #include "analyseur_syntaxique.tab.h"
 #include "analyseur_lexical_flex.h"
 #include "code3a.h"
+#include "c3a2nasm.h"
 
 
 FILE *yyin;
 extern char *yytext;   // déclaré dans analyseur_lexical
 n_prog * n;
 
+int trace_tabsymb;
 
 /***********************************************************************
  * Fonction auxiliaire appelée par le compilo en mode -l pour tester
@@ -52,6 +54,8 @@ int main(int argc, char **argv) {
   int affiche_mips = 0;
   int affiche_nasm = 0;
   int affiche_tabsymb = 0;
+
+  trace_tabsymb = 0;
 
   if(argc == 1){
     affiche_message_aide(argv[0]);
@@ -99,9 +103,8 @@ int main(int argc, char **argv) {
   }
   if( affiche_syntaxe_abstraite )
   {
-	yyparse();
-	affiche_n_prog(n);
-	//printf("\nCompilation complete!\n");
+    yyparse();
+    affiche_n_prog(n);
   }
   if(affiche_code3a)
   {
@@ -112,11 +115,14 @@ int main(int argc, char **argv) {
   if(affiche_tabsymb)
   {
     yyparse();
+    trace_tabsymb = 1;
     parcours_n_prog(n);
   }
   if(affiche_nasm)
   {
-    //Affiche code cible NASM
+    yyparse();
+    parcours_n_prog(n);
+    c3a2nasm_generer();
   }
   return 0;
 }

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "syntabs.h"
 #include "util.h"
 #include "tabsymboles.h"
@@ -13,7 +14,7 @@ extern int adresseGlobaleCourante;
 extern int adresseLocaleCourante;
 extern int adresseArgumentCourant;
 
-int trace_tabsymb = 1;
+extern int trace_tabsymb;
 
 void parcours_n_prog(n_prog *n);
 void parcours_l_instr(n_l_instr *n);
@@ -209,7 +210,7 @@ operande * parcours_exp(n_exp *n)
   else if(n->type == intExp) return parcours_intExp(n); 
   else if(n->type == appelExp) return parcours_appelExp(n); 
   else if(n->type == lireExp) return parcours_lireExp(n); 
-  erreur("Type d'expression non valide");
+  return NULL; // Wallah c'est à cause des warnings!
 
 }
 
@@ -324,7 +325,10 @@ operande * parcours_intExp(n_exp *n)
 operande * parcours_appelExp(n_exp *n)
 {
   parcours_appel(n->u.appel);
-  return code3a_new_func(n->u.appel->fonction);
+  
+  operande * op_result = code3a_new_temporaire();
+  code3a_ajoute_instruction(func_call, code3a_new_func(n->u.appel->fonction), NULL, op_result, "Appel fonction Expression");
+  return op_result;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -494,6 +498,7 @@ operande * parcours_var(n_var *n)
     }
   }
   else erreur("Variable ou tableau non déclaré.e");
+  return NULL; // Wallah c'est encore à cause des warnings!
 }
 
 /*-------------------------------------------------------------------------*/

@@ -31,6 +31,7 @@ struct operande_ {
     struct {
         int oper_tempnum; // numéro d'un temporaire
         int  last_use;    // ligne où ce temp. est utilisé la dernière fois
+        int emplacement;
     } oper_temp; // temporaire utilisé dans éval d'expressions
     struct {
         char *oper_nom;
