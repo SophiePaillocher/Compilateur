@@ -456,6 +456,7 @@ void parcours_tabDec(n_dec *n)
 
   if(portee == P_VARIABLE_GLOBALE)
   {
+    code3a_ajoute_instruction(alloc, code3a_new_constante(n->u.tabDec_.taille), code3a_new_var(n->nom, portee, adresseLocaleCourante), NULL, "allocation declaration tableau globale");
     ajouteIdentificateur(n->nom, portee, T_TABLEAU_ENTIER, adresseGlobaleCourante, n->u.tabDec_.taille);
     adresseGlobaleCourante += (4 * n->u.tabDec_.taille);
   }
