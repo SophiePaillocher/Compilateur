@@ -79,6 +79,7 @@ int main(int argc, char **argv) {
     }
     else if(!strcmp(argv[i], "-t")) {
        affiche_tabsymb = 1;
+       trace_tabsymb = 1;
     }
     else if(!strcmp(argv[i], "-h")){
        affiche_message_aide(argv[0]);
@@ -115,9 +116,7 @@ int main(int argc, char **argv) {
   if(affiche_tabsymb)
   {
     yyparse();
-    trace_tabsymb = 1;
     parcours_n_prog(n);
-    trace_tabsymb = 0;
   }
   if(affiche_nasm)
   {
