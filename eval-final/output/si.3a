@@ -1,0 +1,5 @@
+0000           : alloc 1 v$a		; allocation declaration variable globale
+0001 >   fmain : fbegin		; Début de fonction
+0002           : if 0 == 0 goto e0		; Test Si
+0003           : write 1		; Appel ecrire()
+0004 >      e0 : fend		; Fin de fonction

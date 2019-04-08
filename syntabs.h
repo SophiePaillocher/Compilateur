@@ -97,11 +97,12 @@ n_exp *cree_n_exp_lire(void);
    type */
 struct n_instr_ {
   enum {affecteInst, siInst, tantqueInst, appelInst, retourInst, ecrireInst, 
-        videInst, blocInst } type;
+        videInst, blocInst, pourInst} type;
   union{
     struct{n_var *var; n_exp *exp;} affecte_;    
     struct{n_exp *test; struct n_instr_ *alors; struct n_instr_ *sinon;} si_;
     struct{n_exp *test; struct n_instr_ *faire;} tantque_;
+    struct{struct n_instr_ *init; n_exp *test; n_instr *variation; struct n_instr_ *faire;} pour_;
     n_appel *appel;
     struct{n_exp *expression;} retour_;
     struct{n_exp *expression;} ecrire_;
@@ -116,6 +117,8 @@ n_instr *cree_n_instr_si(n_exp *test, n_instr *alors, n_instr *sinon);
 n_instr *cree_n_instr_bloc(n_l_instr *liste);
 /* Crée un noeud de type instruction "tantque" */
 n_instr *cree_n_instr_tantque(n_exp *test, n_instr *faire);
+/* Crée un noeud de type instruction "pour" */
+n_instr *cree_n_instr_pour(n_instr *init, n_exp *test, n_instr *variation, n_instr *faire );
 /* Crée un noeud de type instruction d'affectation */
 n_instr *cree_n_instr_affect(n_var *var, n_exp *exp);
 /* Crée un noeud de type instruction d'appel de fonction  */

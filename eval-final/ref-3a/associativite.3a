@@ -1,0 +1,6 @@
+0000           : alloc 1 v$a		; $a
+0001 >   fmain : fbegin
+0002           : t0 = 5 - 3
+0003           : t1 = t0 + 2
+0004           : write t1
+0005           : fend

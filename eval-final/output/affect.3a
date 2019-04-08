@@ -1,0 +1,4 @@
+0000           : alloc 1 v$a		; allocation declaration variable globale
+0001 >   fmain : fbegin		; Début de fonction
+0002           : v$a = 123		; Affectation d'une variable
+0003           : fend		; Fin de fonction

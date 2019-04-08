@@ -1,0 +1,27 @@
+0000           : alloc 20 vv		; allocation declaration tableau globale
+0001           : alloc 1 vi		; allocation declaration variable globale
+0002 >   fmain : fbegin		; Début de fonction
+0003           : vv[0] = 5		; Affectation d'une variable
+0004           : vi = 0		; Affectation d'une variable
+0005 >      e0 : t0 = -1		; Initialisation Inferieur
+0006           : if vi < 20 goto e1		; Test Inferieur
+0007           : t0 = 0		; Correction Inferieur
+0008 >      e1 : if t0 == 0 goto e2		; Test condition Tantque
+0009           : t1 = vi		; Creation temporaire case tableau
+0010           : t2 = vi - 1		; Soustration
+0011           : t3 = vv[t2] + 5		; Addition
+0012           : vv[t1] = t3		; Affectation d'une variable
+0013           : t4 = vi + 1		; Addition
+0014           : vi = t4		; Affectation d'une variable
+0015           : goto e0		; Retour au test pour
+0016 >      e2 : vi = 0		; Affectation d'une variable
+0017 >      e3 : t5 = -1		; Initialisation Inferieur
+0018           : if vi < 20 goto e4		; Test Inferieur
+0019           : t5 = 0		; Correction Inferieur
+0020 >      e4 : if t5 == 0 goto e5		; Test condition Tantque
+0021           : t6 = vi		; Creation temporaire case tableau
+0022           : write vv[t6]		; Appel ecrire()
+0023           : t7 = vi + 1		; Addition
+0024           : vi = t7		; Affectation d'une variable
+0025           : goto e3		; Retour au test pour
+0026 >      e5 : fend		; Fin de fonction

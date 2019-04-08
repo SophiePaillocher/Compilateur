@@ -1,0 +1,6 @@
+0000           : alloc 1 v$a		; allocation declaration variable globale
+0001 >   fmain : fbegin		; Début de fonction
+0002           : t0 = 5 - 3		; Soustration
+0003           : t1 = t0 + 2		; Addition
+0004           : write t1		; Appel ecrire()
+0005           : fend		; Fin de fonction

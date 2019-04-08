@@ -1,0 +1,4 @@
+0000           : alloc 1 v$a		; $a
+0001 >   fmain : fbegin
+0002           : v$a = 123
+0003           : fend

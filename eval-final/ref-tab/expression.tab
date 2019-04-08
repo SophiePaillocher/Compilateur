@@ -1,0 +1,7 @@
+------------------------------------------
+base = 3
+sommet = 3
+0 $a GLOBALE ENTIER 0 1
+1 $b GLOBALE ENTIER 4 1
+2 main GLOBALE FONCTION 0 0
+------------------------------------------

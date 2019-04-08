@@ -59,6 +59,7 @@ int yyerror(char *s); // declare ci-dessous
 %token LIRE
 %token ECRIRE
 %token VIRGULE
+%token POUR
 
 
 %type <prog>  programme
@@ -71,7 +72,7 @@ int yyerror(char *s); // declare ci-dessous
 %type <l_dec> suiteDeclarationsVar
 %type <l_dec> ligneDeclarationsVar
 
-%type <instr> affectation condition boucle retour appelFonction blocInstructions
+%type <instr> affectation condition instr_tantque instr_pour retour appelFonction blocInstructions
 
 %type <appel> fonction
 
@@ -180,7 +181,8 @@ listArg : VIRGULE expressionArithmetique	listArg		{$$ = cree_n_l_exp($2, $3);}
 
 instruction : affectation		{$$ = $1;}
 		|	condition			{$$ = $1;}
-		|	boucle				{$$ = $1;}
+		|	instr_tantque		{$$ = $1;}
+		|	instr_pour			{$$ = $1;}
 		|	retour				{$$ = $1;}
 		|	appelFonction		{$$ = $1;}
 		|	blocInstructions	{$$ = $1;}
@@ -193,7 +195,9 @@ condition : SI expressionArithmetique ALORS blocInstructions							{$$ = cree_n_
 		|	SI expressionArithmetique ALORS blocInstructions SINON blocInstructions		{$$ = cree_n_instr_si($2, $4, $6);}
 		;
 		
-boucle : TANTQUE expressionArithmetique FAIRE blocInstructions 		{$$ = cree_n_instr_tantque($2, $4);};
+instr_tantque : TANTQUE expressionArithmetique FAIRE blocInstructions 		{$$ = cree_n_instr_tantque($2, $4);};
+
+instr_pour : POUR affectation expressionArithmetique POINT_VIRGULE affectation FAIRE blocInstructions	{$$ = cree_n_instr_pour($2, $3, $5, $7);};
 
 retour : RETOUR expressionArithmetique POINT_VIRGULE 		{$$ = cree_n_instr_retour($2);};
 

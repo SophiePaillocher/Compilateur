@@ -1,0 +1,15 @@
+0000           : alloc 1 v$i		; $i
+0001           : alloc 1 v$carre		; $carre
+0002 >   fmain : fbegin
+0003           : v$i = 0
+0004 >      e0 : t0 = -1
+0005           : if v$i < 10 goto e2
+0006           : t0 = 0
+0007 >      e2 : if t0 == 0 goto e1
+0008           : t1 = v$i * v$i
+0009           : v$carre = t1
+0010           : write v$carre
+0011           : t2 = v$i + 1
+0012           : v$i = t2
+0013           : goto e0
+0014 >      e1 : fend

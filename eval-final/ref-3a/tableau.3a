@@ -1,0 +1,5 @@
+0000           : alloc 10 v$tab		; $tab
+0001 >   fmain : fbegin
+0002           : v$tab[4] = 4
+0003           : write v$tab[4]
+0004           : fend

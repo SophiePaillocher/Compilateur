@@ -21,6 +21,7 @@ void parcours_l_instr(n_l_instr *n);
 void parcours_instr(n_instr *n);
 void parcours_instr_si(n_instr *n);
 void parcours_instr_tantque(n_instr *n);
+void parcours_instr_pour(n_instr *n);
 void parcours_instr_affect(n_instr *n);
 void parcours_instr_appel(n_instr *n);
 void parcours_instr_retour(n_instr *n);
@@ -83,6 +84,7 @@ void parcours_instr(n_instr *n)
     else if(n->type == affecteInst) parcours_instr_affect(n);
     else if(n->type == siInst) parcours_instr_si(n);
     else if(n->type == tantqueInst) parcours_instr_tantque(n);
+    else if(n->type == pourInst) parcours_instr_pour(n);
     else if(n->type == appelInst) parcours_instr_appel(n);
     else if(n->type == retourInst) parcours_instr_retour(n);
     else if(n->type == ecrireInst) parcours_instr_ecrire(n);
@@ -131,6 +133,28 @@ void parcours_instr_tantque(n_instr *n)
   parcours_instr(n->u.tantque_.faire);
   
   code3a_ajoute_instruction(jump, code3a_new_etiquette(etiquette_name_debut), NULL, NULL, "Retour au test Tantque");
+  code3a_ajoute_etiquette(etiquette_name_fin);
+}
+
+/*-------------------------------------------------------------------------*/
+
+void parcours_instr_pour(n_instr *n)
+{
+  parcours_instr_affect(n->u.pour_.init);
+  
+  char * etiquette_name_debut = code3a_new_etiquette_name();
+  code3a_ajoute_etiquette(etiquette_name_debut);
+
+  operande * op_test = parcours_exp(n->u.pour_.test);
+
+  char * etiquette_name_fin = code3a_new_etiquette_name();
+  code3a_ajoute_instruction(jump_if_equal, op_test, code3a_new_constante(0), code3a_new_etiquette(etiquette_name_fin), "Test condition Tantque");
+
+  parcours_instr(n->u.pour_.faire);
+  
+  parcours_instr(n->u.pour_.variation);
+
+  code3a_ajoute_instruction(jump, code3a_new_etiquette(etiquette_name_debut), NULL, NULL, "Retour au test pour");
   code3a_ajoute_etiquette(etiquette_name_fin);
 }
 

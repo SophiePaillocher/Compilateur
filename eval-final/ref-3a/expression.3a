@@ -1,0 +1,10 @@
+0000           : alloc 1 v$a		; $a
+0001           : alloc 1 v$b		; $b
+0002 >   fmain : fbegin
+0003           : t0 = read 
+0004           : v$a = t0
+0005           : t1 = read 
+0006           : v$b = t1
+0007           : t2 = v$a + v$b
+0008           : write t2
+0009           : fend

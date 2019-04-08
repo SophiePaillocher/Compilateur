@@ -1,0 +1,9 @@
+0000           : alloc 1 v$a		; allocation declaration variable globale
+0001 >   fmain : fbegin		; Début de fonction
+0002           : v$a = 100		; Affectation d'une variable
+0003 >      e0 : if v$a == 0 goto e1		; Test condition Tantque
+0004           : write v$a		; Appel ecrire()
+0005           : t0 = v$a - 1		; Soustration
+0006           : v$a = t0		; Affectation d'une variable
+0007           : goto e0		; Retour au test Tantque
+0008 >      e1 : fend		; Fin de fonction

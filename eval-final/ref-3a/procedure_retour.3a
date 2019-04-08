@@ -1,0 +1,9 @@
+0000 >fprocedure : fbegin
+0001           : ret 1		; sauvegarder la valeur de retour
+0002           : fend		; terminer l'exécution de la fonction
+0003           : fend
+0004 >   fmain : fbegin
+0005           : alloc 1		; alloue de la place pour la valeur de retour
+0006           : t0 = call fprocedure
+0007           : write t0
+0008           : fend

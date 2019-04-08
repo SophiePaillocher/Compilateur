@@ -1,0 +1,86 @@
+0000           : alloc 10 v$tab		; allocation declaration tableau globale
+0001 >finitialiser : fbegin		; Début de fonction
+0002           : v$tab[0] = 8		; Affectation d'une variable
+0003           : v$tab[1] = 6		; Affectation d'une variable
+0004           : v$tab[2] = 9		; Affectation d'une variable
+0005           : v$tab[3] = 9		; Affectation d'une variable
+0006           : v$tab[4] = 4		; Affectation d'une variable
+0007           : v$tab[5] = 2		; Affectation d'une variable
+0008           : v$tab[6] = 3		; Affectation d'une variable
+0009           : v$tab[7] = 1		; Affectation d'une variable
+0010           : v$tab[8] = 4		; Affectation d'une variable
+0011           : v$tab[9] = 5		; Affectation d'une variable
+0012           : fend		; Fin de fonction
+0013 >fafficher : fbegin		; Début de fonction
+0014           : alloc 1 v$i		; allocation declaration variable locale
+0015           : v$i = 0		; Affectation d'une variable
+0016 >      e0 : t0 = -1		; Initialisation Inferieur
+0017           : if v$i < v$n goto e1		; Test Inferieur
+0018           : t0 = 0		; Correction Inferieur
+0019 >      e1 : if t0 == 0 goto e2		; Test condition Tantque
+0020           : t1 = v$i		; Creation temporaire case tableau
+0021           : write v$tab[t1]		; Appel ecrire()
+0022           : t2 = v$i + 1		; Addition
+0023           : v$i = t2		; Affectation d'une variable
+0024           : goto e0		; Retour au test Tantque
+0025 >      e2 : write 0		; Appel ecrire()
+0026           : fend		; Fin de fonction
+0027 >fechanger : fbegin		; Début de fonction
+0028           : alloc 1 v$temp		; allocation declaration variable locale
+0029           : t3 = v$j		; Creation temporaire case tableau
+0030           : v$temp = v$tab[t3]		; Affectation d'une variable
+0031           : t4 = v$j		; Creation temporaire case tableau
+0032           : t5 = v$i		; Creation temporaire case tableau
+0033           : v$tab[t4] = v$tab[t5]		; Affectation d'une variable
+0034           : t6 = v$i		; Creation temporaire case tableau
+0035           : v$tab[t6] = v$temp		; Affectation d'une variable
+0036           : fend		; Fin de fonction
+0037 >  ftrier : fbegin		; Début de fonction
+0038           : alloc 1 v$echange		; allocation declaration variable locale
+0039           : alloc 1 v$j		; allocation declaration variable locale
+0040           : alloc 1 v$m		; allocation declaration variable locale
+0041           : v$m = v$n		; Affectation d'une variable
+0042           : v$echange = 1		; Affectation d'une variable
+0043 >      e3 : t7 = -1		; Initialisation Egal
+0044           : if v$echange == 1 goto e4		; Test Egal
+0045           : t7 = 0		; Correction Egal
+0046 >      e4 : if t7 == 0 goto e5		; Test condition Tantque
+0047           : v$echange = 0		; Affectation d'une variable
+0048           : v$j = 0		; Affectation d'une variable
+0049 >      e6 : t8 = v$m - 1		; Soustration
+0050           : t9 = -1		; Initialisation Inferieur
+0051           : if v$j < t8 goto e7		; Test Inferieur
+0052           : t9 = 0		; Correction Inferieur
+0053 >      e7 : if t9 == 0 goto e8		; Test condition Tantque
+0054           : t10 = v$j + 1		; Addition
+0055           : t11 = v$j		; Creation temporaire case tableau
+0056           : t12 = -1		; Initialisation Inferieur
+0057           : if v$tab[t10] < v$tab[t11] goto e9		; Test Inferieur
+0058           : t12 = 0		; Correction Inferieur
+0059 >      e9 : if t12 == 0 goto e10		; Test Si
+0060           : alloc 1		; Allocation valeur de retour
+0061           : param v$j		; Param
+0062           : t14 = v$j + 1		; Addition
+0063           : param t14		; Param
+0064           : call fechanger		; Appel fonction instruction
+0065           : v$echange = 1		; Affectation d'une variable
+0066 >     e10 : t15 = v$j + 1		; Addition
+0067           : v$j = t15		; Affectation d'une variable
+0068           : goto e6		; Retour au test Tantque
+0069 >      e8 : t16 = v$m - 1		; Soustration
+0070           : v$m = t16		; Affectation d'une variable
+0071           : goto e3		; Retour au test Tantque
+0072 >      e5 : fend		; Fin de fonction
+0073 >   fmain : fbegin		; Début de fonction
+0074           : alloc 1		; Allocation valeur de retour
+0075           : call finitialiser		; Appel fonction instruction
+0076           : alloc 1		; Allocation valeur de retour
+0077           : param 10		; Param
+0078           : call fafficher		; Appel fonction instruction
+0079           : alloc 1		; Allocation valeur de retour
+0080           : param 10		; Param
+0081           : call ftrier		; Appel fonction instruction
+0082           : alloc 1		; Allocation valeur de retour
+0083           : param 10		; Param
+0084           : call fafficher		; Appel fonction instruction
+0085           : fend		; Fin de fonction

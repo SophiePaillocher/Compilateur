@@ -1,0 +1,27 @@
+0000           : alloc 20 vv		; v
+0001           : alloc 1 vi		; i
+0002 >   fmain : fbegin
+0003           : vv[0] = 5
+0004           : vi = 0
+0005 >      e0 : t0 = -1
+0006           : if vi < 20 goto e2
+0007           : t0 = 0
+0008 >      e2 : if t0 == 0 goto e1
+0009           : t1 = vi - 1
+0010           : t2 = vv[t1] + 5
+0011           : t3 = vi
+0012           : vv[t3] = t2
+0013           : t4 = vi + 1
+0014           : vi = t4
+0015           : goto e0
+0016 >      e1 : vi = 0
+0017 >      e3 : t5 = -1
+0018           : if vi < 20 goto e5
+0019           : t5 = 0
+0020 >      e5 : if t5 == 0 goto e4
+0021           : t6 = vi
+0022           : write vv[t6]
+0023           : t7 = vi + 1
+0024           : vi = t7
+0025           : goto e3
+0026 >      e4 : fend

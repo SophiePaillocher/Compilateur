@@ -1,0 +1,5 @@
+0000           : alloc 1 v$a		; $a
+0001 >   fmain : fbegin
+0002           : if 0 == 0 goto e1
+0003           : write 1
+0004 >      e1 : fend

@@ -1,0 +1,84 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{fancyheadings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage[top=1.9cm,hmargin=2.5cm]{geometry}
+%\usepackage{fguill}
+\usepackage{tipa}
+\usepackage{longtable}
+\newcommand{\gui}[1]{\og{#1}\fg}
+\newcommand{\ouf}{\vspace{3mm}}
+\usepackage{url}
+
+\newcounter{serie} \setcounter{serie}1
+\newcounter{numexo}
+\newcommand{\exonum}{Q.\theserie.\addtocounter{numexo}{1}\thenumexo.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{\vspace{-1em}Evaluation finale du compilateur\vspace{-2em}} 
+%\author{}
+\date{2018/2019}
+%\date{4 janvier 2009}
+
+\begin{document}
+\setlength{\parindent}{0cm}
+
+\maketitle
+
+\lhead{\emph{Université Aix Marseille - L3 Informatique}}
+\rhead{\emph{Compilation}}
+%\setlength{\headrulewidth}{0.25pt} 
+\thispagestyle{fancy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{longtable}{|l|p{5cm}|l|p{5cm}|} \hline
+ NOM        & & PRÉNOM & \\ 
+            & &        & \\ \hline
+ NOM        & & PRÉNOM & \\ 
+            & &        & \\ \hline 
+ URL git~+  & \multicolumn{3}{|c|}{} \\
+ no. commit & \multicolumn{3}{|c|}{} \\ \hline
+\end{longtable}
+
+\section{Le compilateur (4pt)}
+
+\begin{longtable}{|p{2.7cm}|p{2.7cm}|p{2.7cm}|p{2.7cm}|p{2.7cm}|} \hline
+lex & asynt & tab & 3a & nasm \\ \hline
+& & & & \\ 
+& & & & \\ \hline
+\multicolumn{2}{|l|}{Extensions/améliorations} & \multicolumn{3}{c|}{} \\ 
+\multicolumn{2}{|l|}{                        } & \multicolumn{3}{c|}{} \\ \hline
+\multicolumn{2}{|l|}{Documentation/Readme    } & \multicolumn{3}{c|}{} \\ 
+\multicolumn{2}{|l|}{                        } & \multicolumn{3}{c|}{} \\ \hline
+\end{longtable}
+
+\section{Exemples connus (4pt)}
+
+\begin{longtable}{|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{2.2cm}|} \hline
+lex & asynt & tab & 3a & nasm & erreur\\ \hline
+& & & & & \\ 
+& & & & & \\ \hline
+\end{longtable}
+
+\section{Exemples nouveaux (4pt)}
+
+\begin{longtable}{|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{2.2cm}|} \hline
+lex & asynt & tab & 3a & nasm & erreur\\ \hline
+& & & & & \\ 
+& & & & & \\ \hline
+\end{longtable}
+
+\section{Nouvelle fonctionnalité (8pt)}
+
+\begin{longtable}{|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{2.2cm}|p{2.2cm}|} \hline
+lex & asynt & tab & 3a & nasm & erreur\\ \hline
+& & & & & \\ 
+& & & & & \\ \hline
+\end{longtable}
+
+
+\end{document}

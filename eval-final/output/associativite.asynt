@@ -1,0 +1,31 @@
+<prog>
+  <l_dec>
+    <varDec>$a</varDec>
+    <l_dec>
+    </l_dec>
+  </l_dec>
+  <l_dec>
+    <foncDec>
+      main
+      <l_dec>
+      </l_dec>
+      <l_dec>
+      </l_dec>
+      <l_instr>
+        <instr_ecrire>
+          <opExp>
+            plus
+            <opExp>
+              moins
+              <intExp>5</intExp>
+              <intExp>3</intExp>
+            </opExp>
+            <intExp>2</intExp>
+          </opExp>
+        </instr_ecrire>
+      </l_instr>
+    </foncDec>
+    <l_dec>
+    </l_dec>
+  </l_dec>
+</prog>

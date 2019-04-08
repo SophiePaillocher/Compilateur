@@ -1,0 +1,9 @@
+0000 >fprocedure : fbegin
+0001           : alloc 1 v$a		; $a
+0002           : v$a = 1
+0003           : write v$a
+0004           : fend
+0005 >   fmain : fbegin
+0006           : alloc 1		; alloue de la place pour la valeur de retour
+0007           : call fprocedure
+0008           : fend
