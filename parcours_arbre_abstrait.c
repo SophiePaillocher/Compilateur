@@ -14,7 +14,7 @@ extern int adresseGlobaleCourante;
 extern int adresseLocaleCourante;
 extern int adresseArgumentCourant;
 
-int trace_tabsymb;
+int trace_tabsymb = 0;
 
 void parcours_n_prog(n_prog *n);
 void parcours_l_instr(n_l_instr *n);
