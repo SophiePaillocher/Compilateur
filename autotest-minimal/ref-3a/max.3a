@@ -1,0 +1,29 @@
+0000 >    fmax : fbegin
+0001           : t0 = -1
+0002           : if v$a < v$b goto e2
+0003           : t0 = 0
+0004 >      e2 : if t0 == 0 goto e1
+0005           : ret v$b		; sauvegarder la valeur de retour
+0006           : fend		; terminer l'exécution de la fonction
+0007 >      e1 : ret v$a		; sauvegarder la valeur de retour
+0008           : fend		; terminer l'exécution de la fonction
+0009           : fend
+0010 >   fmain : fbegin
+0011           : alloc 1 v$v_1		; $v_1
+0012           : alloc 1 v$v_2		; $v_2
+0013           : t1 = read 
+0014           : v$v_1 = t1
+0015           : t2 = read 
+0016           : v$v_2 = t2
+0017           : alloc 1		; alloue de la place pour la valeur de retour
+0018           : param v$v_1
+0019           : param v$v_2
+0020           : t3 = call fmax
+0021           : t4 = -1
+0022           : if t3 == v$v_1 goto e5
+0023           : t4 = 0
+0024 >      e5 : if t4 == 0 goto e3
+0025           : write v$v_1
+0026           : goto e4
+0027 >      e3 : write v$v_2
+0028 >      e4 : fend

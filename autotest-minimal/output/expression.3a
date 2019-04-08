@@ -1,0 +1,10 @@
+0000           : alloc 1 v$a		; allocation declaration variable globale
+0001           : alloc 1 v$b		; allocation declaration variable globale
+0002 >   fmain : fbegin		; Début de fonction
+0003           : t0 = read 		; Apel de lire()
+0004           : v$a = t0		; Affectation d'une variable
+0005           : t1 = read 		; Apel de lire()
+0006           : v$b = t1		; Affectation d'une variable
+0007           : t2 = v$a + v$b		; Addition
+0008           : write t2		; Appel ecrire()
+0009           : fend		; Fin de fonction

@@ -14,7 +14,7 @@ FILE *yyin;
 extern char *yytext;   // déclaré dans analyseur_lexical
 n_prog * n;
 
-extern int trace_tabsymb;
+int trace_tabsymb;
 extern code3a_ code3a;
 
 /***********************************************************************

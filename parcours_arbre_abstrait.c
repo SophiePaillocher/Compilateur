@@ -5,7 +5,7 @@
 #include "tabsymboles.h"
 #include "parcours_arbre_abstrait.h"
 #include "code3a.h"
-
+#include "c3a2nasm.h"
 
 extern tabsymboles_ tabsymboles;
 
@@ -429,21 +429,21 @@ void parcours_varDec(n_dec *n)
 
   if(portee == P_ARGUMENT)
   {
-    ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseArgumentCourant, 0);
+    ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseArgumentCourant, 1);
     adresseArgumentCourant += 4;
   }
 
   else if(portee == P_VARIABLE_LOCALE)
   {
     code3a_ajoute_instruction(alloc, code3a_new_constante(1), code3a_new_var(n->nom, portee, adresseLocaleCourante), NULL, "allocation declaration variable locale");
-    ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseLocaleCourante, 0);
+    ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseLocaleCourante, 1);
     adresseLocaleCourante += 4;
   }
 
   else if(portee == P_VARIABLE_GLOBALE)
   {
     code3a_ajoute_instruction(alloc, code3a_new_constante(1), code3a_new_var(n->nom, portee, adresseLocaleCourante), NULL, "allocation declaration variable globale");
-    ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseGlobaleCourante, 0);
+    ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseGlobaleCourante, 1);
     adresseGlobaleCourante += 4;
   }
 

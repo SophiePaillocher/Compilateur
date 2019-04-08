@@ -1,0 +1,12 @@
+entier	mot_clef	entier
+$a	identificateur	$a
+;	symbole	POINT_VIRGULE
+main	identificateur	main
+(	symbole	PARENTHESE_OUVRANTE
+)	symbole	PARENTHESE_FERMANTE
+{	symbole	ACCOLADE_OUVRANTE
+$a	identificateur	$a
+=	symbole	EGAL
+123	nombre	123
+;	symbole	POINT_VIRGULE
+}	symbole	ACCOLADE_FERMANTE

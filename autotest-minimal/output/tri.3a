@@ -1,0 +1,75 @@
+0000           : alloc 10 v$tab		; allocation declaration tableau globale
+0001 >finitialiser : fbegin		; Début de fonction
+0002           : v$tab[0] = 8		; Affectation d'une variable
+0003           : v$tab[1] = 6		; Affectation d'une variable
+0004           : v$tab[2] = 9		; Affectation d'une variable
+0005           : v$tab[3] = 9		; Affectation d'une variable
+0006           : v$tab[4] = 4		; Affectation d'une variable
+0007           : v$tab[5] = 2		; Affectation d'une variable
+0008           : v$tab[6] = 3		; Affectation d'une variable
+0009           : v$tab[7] = 1		; Affectation d'une variable
+0010           : v$tab[8] = 4		; Affectation d'une variable
+0011           : v$tab[9] = 5		; Affectation d'une variable
+0012           : fend		; Fin de fonction
+0013 >fafficher : fbegin		; Début de fonction
+0014           : alloc 1 v$i		; allocation declaration variable locale
+0015           : v$i = 0		; Affectation d'une variable
+0016 >      e0 : t0 = -1		; Initialisation Inferieur
+0017           : if v$i < v$n goto e1		; Test Inferieur
+0018           : t0 = 0		; Correction Inferieur
+0019 >      e1 : if t0 == 0 goto e2		; Test condition Tantque
+0020           : write v$tab[v$i]		; Appel ecrire()
+0021           : t1 = v$i + 1		; Addition
+0022           : v$i = t1		; Affectation d'une variable
+0023           : goto e0		; Retour au test Tantque
+0024 >      e2 : write 0		; Appel ecrire()
+0025           : fend		; Fin de fonction
+0026 >fechanger : fbegin		; Début de fonction
+0027           : alloc 1 v$temp		; allocation declaration variable locale
+0028           : v$temp = v$tab[v$j]		; Affectation d'une variable
+0029           : v$tab[v$j] = v$tab[v$i]		; Affectation d'une variable
+0030           : v$tab[v$i] = v$temp		; Affectation d'une variable
+0031           : fend		; Fin de fonction
+0032 >  ftrier : fbegin		; Début de fonction
+0033           : alloc 1 v$echange		; allocation declaration variable locale
+0034           : alloc 1 v$j		; allocation declaration variable locale
+0035           : alloc 1 v$m		; allocation declaration variable locale
+0036           : v$m = v$n		; Affectation d'une variable
+0037           : v$echange = 1		; Affectation d'une variable
+0038 >      e3 : t2 = -1		; Initialisation Egal
+0039           : if v$echange == 1 goto e4		; Test Egal
+0040           : t2 = 0		; Correction Egal
+0041 >      e4 : if t2 == 0 goto e5		; Test condition Tantque
+0042           : v$echange = 0		; Affectation d'une variable
+0043           : v$j = 0		; Affectation d'une variable
+0044 >      e6 : t3 = v$m - 1		; Soustration
+0045           : t4 = -1		; Initialisation Inferieur
+0046           : if v$j < t3 goto e7		; Test Inferieur
+0047           : t4 = 0		; Correction Inferieur
+0048 >      e7 : if t4 == 0 goto e8		; Test condition Tantque
+0049           : t5 = v$j + 1		; Addition
+0050           : t6 = -1		; Initialisation Inferieur
+0051           : if v$tab[t5] < v$tab[v$j] goto e9		; Test Inferieur
+0052           : t6 = 0		; Correction Inferieur
+0053 >      e9 : if t6 == 0 goto e10		; Test Si
+0054           : alloc 1		; Allocation valeur de retour
+0055           : param v$j		; Param
+0056           : t7 = v$j + 1		; Addition
+0057           : param t7		; Param
+0058           : v$echange = 1		; Affectation d'une variable
+0059 >     e10 : t8 = v$j + 1		; Addition
+0060           : v$j = t8		; Affectation d'une variable
+0061           : goto e6		; Retour au test Tantque
+0062 >      e8 : t9 = v$m - 1		; Soustration
+0063           : v$m = t9		; Affectation d'une variable
+0064           : goto e3		; Retour au test Tantque
+0065 >      e5 : fend		; Fin de fonction
+0066 >   fmain : fbegin		; Début de fonction
+0067           : alloc 1		; Allocation valeur de retour
+0068           : alloc 1		; Allocation valeur de retour
+0069           : param 10		; Param
+0070           : alloc 1		; Allocation valeur de retour
+0071           : param 10		; Param
+0072           : alloc 1		; Allocation valeur de retour
+0073           : param 10		; Param
+0074           : fend		; Fin de fonction
