@@ -14,7 +14,8 @@ FILE *yyin;
 extern char *yytext;   // déclaré dans analyseur_lexical
 n_prog * n;
 
-int trace_tabsymb;
+extern int trace_tabsymb;
+extern code3a_ code3a;
 
 /***********************************************************************
  * Fonction auxiliaire appelée par le compilo en mode -l pour tester
