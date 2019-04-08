@@ -29,7 +29,6 @@ int arguments = 0;
 int i_ligne; // ligne courante du code
 operande *desc_reg[NB_REGISTRES+1] = {NULL,NULL,NULL,NULL,NULL}; //1st unused
 char *nomreg[NB_REGISTRES+1] = {NULL,"eax","ebx","ecx","edx"}; //1st unused
-int nbparam = 0;
 int nasm_verbose = 0;
 
 /******************************************************************************/
@@ -301,8 +300,31 @@ void c3a2nasm_finfonction(int varlocs){
 
 /******************************************************************************/
 
+void sauvegarde_registres_avant_appel(){
+  int regnum;
+  for(regnum=1; regnum<=4; regnum++){
+    if(!_is_reg_free(regnum)){
+      _nasm_instr("push", nomreg[regnum], NULL, NULL, "sauvegarde avant appel") ;
+    }
+  }
+}
+
+/******************************************************************************/
+
+void recupere_registres_apres_appel(int excepte){
+  int regnum; // excepte vient d'etre alloué, il n'était pas là avant
+  for(regnum=4; regnum>=1; regnum--){ // effectue lecture à l'envers
+    if(!_is_reg_free(regnum) && regnum != excepte){
+      _nasm_instr("pop", nomreg[regnum], NULL, NULL, "recupere apres appel") ;
+    }
+  }
+}
+
+/******************************************************************************/
+
 void c3a2nasm_allouer(operande *var){
   if(!var) { // valeur de retour d'une fonction
+    sauvegarde_registres_avant_appel();
     _nasm_instr("sub", "esp", "4", NULL, "allocation valeur de retour");
   }
   else{ // variable locale, 4 octets (dword)
@@ -384,13 +406,17 @@ void c3a2nasm_jump(char *opcode, operande *oper1, operande *oper2, operande *cib
 
 void c3a2nasm_appel(operande *foncname, operande *result){
   _nasm_instr("call", foncname->u.oper_nom, NULL, NULL, NULL);
+  int tabfonc = rechercheExecutable(&foncname->u.oper_nom[1]);
+  int nbparam = tabsymboles.tab[tabfonc].complement;
   if(nbparam != 0) { // desallouer les arguments
-    printf("\tadd\tesp, %d\t\t; desallocation parametres\n", 4 * nbparam);
-    nbparam = 0;
+    printf("\tadd\tesp, %d", 4 * nbparam);
+    printverb("\t\t; desallocation parametres");
+    printf("\n");
   }
   if(result){
     result->u.oper_temp.emplacement = new_registre(result);
     _nasm_instr("pop",nomreg[result->u.oper_temp.emplacement],NULL,NULL,"récupère valeur de retour");
+    recupere_registres_apres_appel(result->u.oper_temp.emplacement);
   }
   else{
     _nasm_instr("add","esp","4",NULL,"desalloue valeur de retour ignorée");
@@ -408,7 +434,6 @@ void c3a2nasm_param(operande *oper){
     argchar = varconst2nasm(oper);
   }
   _nasm_instr("push", argchar, NULL, NULL, "empile argument");
-  nbparam++;
 }
 
 /******************************************************************************/

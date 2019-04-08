@@ -39,7 +39,7 @@ void parcours_varDec(n_dec *n);
 void parcours_tabDec(n_dec *n);
 operande * parcours_var(n_var *n);
 operande * parcours_var_indicee(n_var *n);
-void parcours_appel(n_appel *n);
+operande* parcours_appel(n_appel *n, int call_type);
 
 
 /*-------------------------------------------------------------------------*/
@@ -148,15 +148,19 @@ void parcours_instr_affect(n_instr *n)
 
 void parcours_instr_appel(n_instr *n)
 {
-  parcours_appel(n->u.appel);
+  
+  parcours_appel(n->u.appel, 0);
+  
 }
 /*-------------------------------------------------------------------------*/
 
-void parcours_appel(n_appel *n)
+operande * parcours_appel(n_appel *n, int call_type)
 {
   if(rechercheExecutable(n->fonction) != -1)
   {
+    operande * op_result = code3a_new_temporaire();
     code3a_ajoute_instruction(alloc, code3a_new_constante(1), NULL, NULL, "Allocation valeur de retour");
+    
     if(( n->args == NULL ) && ( tabsymboles.tab[rechercheExecutable(n->fonction)].complement == 0 ))
     {
       parcours_l_exp(n->args);
@@ -167,6 +171,16 @@ void parcours_appel(n_appel *n)
     }
     else {erreur("Fonction appelée avec un nombre incorrect d'argument");}
 
+    switch(call_type)
+    {
+      case 0: code3a_ajoute_instruction(func_call, code3a_new_func(n->fonction), NULL, NULL, "Appel fonction instruction");
+                    break;
+      case 1: code3a_ajoute_instruction(func_call, code3a_new_func(n->fonction), NULL, op_result, "Appel fonction Expression");
+                  break;
+      default: ;
+    }  
+
+    return op_result;
   }
  else {erreur("Fonction non déclarée");}
 }
@@ -324,11 +338,7 @@ operande * parcours_intExp(n_exp *n)
 
 operande * parcours_appelExp(n_exp *n)
 {
-  parcours_appel(n->u.appel);
-  
-  operande * op_result = code3a_new_temporaire();
-  code3a_ajoute_instruction(func_call, code3a_new_func(n->u.appel->fonction), NULL, op_result, "Appel fonction Expression");
-  return op_result;
+  return parcours_appel(n->u.appel, 1);;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -488,7 +498,21 @@ operande * parcours_var(n_var *n)
         if(tabsymboles.tab[rechercheExecutable(n->nom)].type == T_TABLEAU_ENTIER)
         {  
           operande * op_indice = parcours_var_indicee(n);
-          return code3a_new_var_indicee(n->nom, tabsymboles.tab[rechercheExecutable(n->nom)].portee, tabsymboles.tab[rechercheExecutable(n->nom)].adresse, op_indice);                            // A modifier pour les tableaux
+          operande * op_temp;
+
+          switch(op_indice->oper_type)
+          {
+            case O_VARIABLE : op_temp = code3a_new_temporaire();
+                              code3a_ajoute_instruction(assign, op_indice, NULL, op_temp, "Creation temporaire case tableau");
+                              return code3a_new_var_indicee(n->nom, tabsymboles.tab[rechercheExecutable(n->nom)].portee, tabsymboles.tab[rechercheExecutable(n->nom)].adresse, op_temp);
+                              break;
+            case O_TEMPORAIRE :
+            case O_CONSTANTE :  return code3a_new_var_indicee(n->nom, tabsymboles.tab[rechercheExecutable(n->nom)].portee, tabsymboles.tab[rechercheExecutable(n->nom)].adresse, op_indice);
+                                break;
+             
+            default : ;
+          }
+          
         }
         else
         {
