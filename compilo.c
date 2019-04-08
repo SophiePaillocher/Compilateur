@@ -117,6 +117,7 @@ int main(int argc, char **argv) {
     yyparse();
     trace_tabsymb = 1;
     parcours_n_prog(n);
+    trace_tabsymb = 0;
   }
   if(affiche_nasm)
   {
